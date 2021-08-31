@@ -126,7 +126,7 @@ void load_tree_table(int filenr)
 
   if(!(tree_file = fopen(buf, "r")))
     {
-      char sbuf[1000];
+      char sbuf[2000];
       sprintf(sbuf, "can't open file place `%s'\n", buf);
       terminate(sbuf);
     }

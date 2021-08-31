@@ -70,7 +70,7 @@
 int main(int argc, char **argv)
 {
   int filenr, *FileToProcess, *TaskToProcess, nfiles;
-  char buf[1000];
+  char buf[2500];
   time_t start, current;
 
 

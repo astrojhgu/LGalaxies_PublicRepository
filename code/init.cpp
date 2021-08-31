@@ -184,7 +184,7 @@ void read_zlist(void)
 	int i;
   FILE *fd;
   char fname[1000];
-  char sbuf[1000];
+  char sbuf[1500];
   //double dumb2, dumb;
 
   sprintf(fname, "%s", FileWithZList);
@@ -240,7 +240,7 @@ void read_zlist_new(void)
   sprintf(fname, "%s", FileWithZList);
   if(!(fd = fopen(fname, "r")))
     {
-  	char sbuf[1000];
+  	char sbuf[2000];
   	sprintf(sbuf, "can't open file `%s'\n", fname);
   	terminate(sbuf);
     }
@@ -333,7 +333,7 @@ void read_output_snaps(void)
 
   if(!(fd = fopen(buf, "r")))
     {
-      char sbuf[1000];
+      char sbuf[2000];
       sprintf(sbuf, "file `%s' not found.\n", buf);
       terminate(sbuf);
     }
@@ -342,7 +342,7 @@ void read_output_snaps(void)
     {
       if(fscanf(fd, " %f ", &ListOutputRedshifts[i]) != 1)
         {
-    	  char sbuf[1000];
+    	  char sbuf[2000];
     	  sprintf(sbuf, "I/O error in file '%s'\n", buf);
     	  terminate(sbuf);
         }

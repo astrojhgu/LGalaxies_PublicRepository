@@ -293,7 +293,7 @@ void update_from_star_formation(int p, double stars, bool flag_burst, int nstep)
 /* there are two modes for supernova feedback corresponding to when the mass returning
  * by dying stars is returned to the cold gas - reheat and ejection; and when the mass
  * is returned to the hot gas - onle ejection.*/
-void SN_feedback(int p, int centralgal, double stars, char feedback_location[])
+void SN_feedback(int p, int centralgal, double stars, const char feedback_location[])
 {
   double CentralVvir, MergeCentralVvir=0., EjectVmax, EjectVvir, SN_Energy, Reheat_Energy, fac;
   double reheated_mass=0., ejected_mass=0.;

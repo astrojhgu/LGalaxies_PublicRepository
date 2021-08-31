@@ -114,7 +114,7 @@ void assign_files_to_tasks(int *FileToProcess, int *TaskToProcess, int ThisTask,
 void starformation(int p, int centralgal, double time, double dt, int nstep);
 void update_stars_due_to_reheat(int p, int centralgal, double *stars);
 void update_from_star_formation(int p, double stars, bool flag_burst, int nstep);
-void SN_feedback(int p, int centralgal, double stars, char feedback_location[]);
+void SN_feedback(int p, int centralgal, double stars, const char feedback_location[]);
 void update_from_feedback(int p, int centralgal, double reheated_mass, double ejected_mass);
 void update_massweightage(int p, double stars, double time);
 
@@ -136,7 +136,7 @@ double NumToTime(int snapnum);
 void locate(double *xx, int n, double x, int *j);
 double integrate(double *flux, int Grid_Length);
 void polint(double xa[], double ya[], int n, double x, double *y, double *dy);
-void nrerror(char error_text[]);
+void nrerror(const char error_text[]);
 double *vector(long nl, long nh);
 void free_vector(double *v, long nl, long nh);
 
@@ -145,7 +145,7 @@ void free_vector(double *v, long nl, long nh);
 #ifdef COMPUTE_SPECPHOT_PROPERTIES
 
 #ifdef PHOTTABLES_PRECOMPUTED
-void setup_LumTables_precomputed(char SimName[]);
+void setup_LumTables_precomputed(const char SimName[]);
 #endif
 
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
@@ -266,8 +266,8 @@ double separation_halo(int p, int q);
 void update_hot_frac(int p, double reincorporated, float HotGas);
 int set_merger_center(int fofhalo);
 
-void transfer_stars(int p, char cp[], int q, char cq[], double fraction);
-void transfer_gas(int p, char cp[], int q, char cq[], double fraction, char call_function[], int line);
+void transfer_stars(int p, const char cp[], int q, const char cq[], double fraction);
+void transfer_gas(int p, const char cp[], int q, const char cq[], double fraction, const char call_function[], int line);
 void deal_with_satellites(int centralgal, int ngal);
 void mass_checks(const char* string, int igal) ;
 
@@ -285,14 +285,14 @@ struct metals metals_add(struct metals m1,
 	       struct metals m2,
 	       float fraction);
 struct metals metals_init();
-void metals_print(char s[],struct metals m);
+void metals_print(const char s[],struct metals m);
 float metals_total(struct metals m);
 #else
 float metals_add(float m1, 
 		 float m2,
 		 float fraction);
 float metals_init();
-void metals_print(char s[], float m);
+void metals_print(const char s[], float m);
 float metals_total(float m);
 #endif
 

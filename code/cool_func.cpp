@@ -26,7 +26,7 @@
 #define TABSIZE 91
 
 
-static char *name[] = {
+static const char *name[] = {
   "stripped_mzero.cie",
   "stripped_m-30.cie",
   "stripped_m-20.cie",
@@ -59,7 +59,7 @@ static double CoolRate[8][TABSIZE];
 void read_cooling_functions(void)
 {
   FILE *fd;
-  char buf[200];
+  char buf[1024];
   int i, n;
   float sd_logT, sd_ne, sd_nh, sd_nt, sd_logLnet,
     sd_logLnorm, sd_logU, sd_logTau, sd_logP12, sd_logRho24, sd_ci, sd_mubar;
@@ -73,7 +73,7 @@ void read_cooling_functions(void)
 
       if(!(fd = fopen(buf, "r")))
 		{
-		  char sbuf[1000];
+		  char sbuf[1500];
 		  sprintf(sbuf, "file `%s' not found.\n", buf);
 		  terminate(sbuf);
 		}

@@ -59,7 +59,7 @@
   sprintf(buf, "/galformod/scratch/bmh20/Workspace/CosmologyTables/fit_%04d_%04d.txt", om_Nbin, s8_Nbin);
   if(!(fd = fopen(buf, "r")))
     {
-      char sbuf[1000];
+      char sbuf[1500];
       sprintf(sbuf, "file `%s' not found.\n", buf);
       terminate(sbuf);
     }
@@ -70,7 +70,7 @@
 
   if(fscanf(fd, "%lf %lf %lf %lf", &ScaleMass, &dummy_growth, &ScalePos, &dummy_snap63)!=4)
     {
-      char sbuf[1000];
+      char sbuf[1500];
       sprintf(sbuf, "Wrong format of values in %s.\n", buf);
       terminate(sbuf);
     }

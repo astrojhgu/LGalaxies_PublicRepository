@@ -144,7 +144,7 @@ void *mymalloc_fullinfo(const char *varname, size_t n, const char *func, const c
 	 ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks] = Base + (TotBytes - FreeBytes);
+  Table[Nblocks] =(void*)((char*) Base + (TotBytes - FreeBytes));
   FreeBytes -= n;
 
   strncpy(VarName + Nblocks * MAXCHARS, varname, MAXCHARS - 1);
@@ -193,7 +193,7 @@ void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const 
 	 ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks] = Base + (TotBytes - FreeBytes);
+  Table[Nblocks] = (void*)((char*)Base + (TotBytes - FreeBytes));
   FreeBytes -= n;
 
   strncpy(VarName + Nblocks * MAXCHARS, varname, MAXCHARS - 1);
@@ -289,12 +289,12 @@ void myfree_movable_fullinfo(void *p, const char *func, const char *file, int li
     length += BlockSize[i];
 
   if(nr < Nblocks - 1)
-    memmove(Table[nr + 1] + offset, Table[nr + 1], length);
+    memmove((char*)Table[nr + 1] + offset, Table[nr + 1], length);
 
   for(i = nr + 1; i < Nblocks; i++)
     {
-      Table[i] += offset;
-      *BasePointers[i] = *BasePointers[i] + offset;
+      Table[i] = (char*)Table[i]+offset;
+      *BasePointers[i] = (char*)*BasePointers[i] + offset;
     }
 
   for(i = nr + 1; i < Nblocks; i++)
@@ -352,7 +352,7 @@ void *myrealloc_fullinfo(void *p, size_t n, const char *func, const char *file, 
 	 FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks - 1] = Base + (TotBytes - FreeBytes);
+  Table[Nblocks - 1] = (char*)Base + (TotBytes - FreeBytes);
   FreeBytes -= n;
 
   AllocatedBytes += n;
@@ -434,13 +434,13 @@ void *myrealloc_movable_fullinfo(void *p, size_t n, const char *func, const char
     length += BlockSize[i];
 
   if(nr < Nblocks - 1)
-    memmove(Table[nr + 1] + offset, Table[nr + 1], length);
+    memmove((char*)Table[nr + 1] + offset, Table[nr + 1], length);
 
   for(i = nr + 1; i < Nblocks; i++)
     {
-      Table[i] += offset;
+      Table[i] = (char*) Table[i]+offset;
 
-      *BasePointers[i] = *BasePointers[i] + offset;
+      *BasePointers[i] = (char*) *BasePointers[i] + offset;
     }
 
   FreeBytes -= n;

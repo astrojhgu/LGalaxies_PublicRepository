@@ -84,7 +84,7 @@ struct metals metals_init()
   return(m);
 }
 
-void metals_print(char s[],struct metals m)
+void metals_print(const char s[],struct metals m)
 {
   printf("%s.type1a [Msun] = %.2f\n",s,m.type1a*1.0e10/Hubble_h);
   printf("%s.type2 [Msun]  = %.2f\n",s,m.type2*1.0e10/Hubble_h);
@@ -113,7 +113,7 @@ float metals_init()
   return(0.);
 }
 
-void metals_print(char s[],float m)
+void metals_print(const char s[],float m)
 {
   printf("%s=%f\n",s,m);
   return;

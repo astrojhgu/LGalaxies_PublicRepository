@@ -23,9 +23,9 @@
 CC       = gcc                  # sets the C-compiler
 CC_MD    = gcc                  # for the metadata
 ifeq (DEBUG,$(findstring DEBUG,$(OPT)))
-OPTIMIZE =   -g -O3 -Wall	# optimization, debugging and warning flags
+OPTIMIZE =   -g -O3 -Wall -Wunused-result	# optimization, debugging and warning flags
 else
-OPTIMIZE = -O3                  # optimization
+OPTIMIZE = -O3 -Wno-unused-result               # optimization
 endif
 
 

@@ -56,11 +56,11 @@ using namespace std;
  *
  * agTableZz[Mag][mettallicity][Snapshot][Age]. */
 #ifdef PHOTTABLES_PRECOMPUTED
-void setup_LumTables_precomputed(char SimName[])
+void setup_LumTables_precomputed(const char SimName[])
 {
   FILE *fa, *fb;
   int MetalLoop, AgeLoop, band, snap;
-  char buf[1000], FilterName[100], dummy[100], SSP[1000];
+  char buf[1900], FilterName[100], dummy[100], SSP[1000];
   char dumb_FilterFile[100];
   float dumb_filterlambda;
   int dumb_ssp_nsnaps, dumb_ssp_nage, dumb_ssp_nmetallicites, dumb_nmag;
@@ -79,7 +79,7 @@ void setup_LumTables_precomputed(char SimName[])
   sprintf(buf, "%s/PhotTables/%s_%s_Metallicity_list.dat", SpecPhotDir, SSP, SpecPhotIMF);
   if(!(fa = fopen(buf, "r")))
     {
-      char sbuf[1000];
+      char sbuf[2000];
       sprintf(sbuf, "file `%s' not found.\n", buf);
       terminate(sbuf);
     }
@@ -107,7 +107,7 @@ void setup_LumTables_precomputed(char SimName[])
       fscanf(fa, "%d", &dumb_nmag);
       if(dumb_nmag != NMAG)
 	{
-	  char sbuf[1000];
+	  char sbuf[2000];
 	  sprintf(sbuf,"nmag on file %s not equal to NMAG",buf);
 	  terminate(sbuf);
 	}
@@ -121,7 +121,7 @@ void setup_LumTables_precomputed(char SimName[])
 		  pow(10,SSP_logMetalTab[MetalLoop]));
 	  if(!(fb = fopen(buf, "r")))
 	    {
-	      char sbuf[1000];
+	      char sbuf[2000];
 	      sprintf(sbuf, "file `%s' not found.\n", buf);
 	      terminate(sbuf);
 	    }

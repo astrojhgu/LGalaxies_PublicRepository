@@ -755,7 +755,7 @@ void update_type_2(int ngal,int halonr, int prog,int mostmassive)
     }
 }
 
-void transfer_stars(int p, char cp[], int q, char cq[], double fraction) {
+void transfer_stars(int p, const char cp[], int q, const char cq[], double fraction) {
 
   /* Transfers a fraction of component cq of galaxy q onto component cp of galaxy p.
    * cp and cq must each be one of:
@@ -1044,7 +1044,7 @@ void transfer_stars(int p, char cp[], int q, char cq[], double fraction) {
 }
 
 
-void transfer_gas(int p, char cp[], int q, char cq[], double fraction, char call_function[], int call_line) {
+void transfer_gas(int p, const char cp[], int q, const char cq[], double fraction, const char call_function[], int call_line) {
 
   /* Transfers a fraction of component cq of galaxy q onto component cp of galaxy p.
    * cp and cq must each be one of:
@@ -1642,7 +1642,7 @@ void polint(double xa[], double ya[], int n, double x, double *y, double *dy)
 }
 
 
-void nrerror(char error_text[])
+void nrerror(const char error_text[])
 /* Numerical Recipes standard error handler */
 {
   fprintf(stderr,"Numerical Recipes run-time error...\n");

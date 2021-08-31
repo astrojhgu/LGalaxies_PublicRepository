@@ -63,7 +63,7 @@ void create_galaxy_files(int filenr)
 {
   // create output files - snapshot option
   int n, i;
-  char buf[1000];
+  char buf[1500];
 
   for(n = 0; n < NOUT; n++)
     {
@@ -73,7 +73,7 @@ void create_galaxy_files(int filenr)
       sprintf(buf, "%s/%s_z%1.2f_%d", OutputDir, FileNameGalaxies, ZZ[ListOutputSnaps[n]], filenr);
       if(!(FdGalDumps[n] = fopen(buf, "w+")))
         {
-    	  char sbuf[1000];
+    	  char sbuf[2000];
     	  sprintf(sbuf, "can't open file `%s'\n", buf);
     	  terminate(sbuf);
         }
@@ -566,7 +566,7 @@ void write_sfh_bins()
   sprintf(buf, "%s/SFH_Bins", FinalOutputDir);
   if(!(SFH_Bins_File = fopen(buf, "w")))
     {
-      char sbuf[1000];
+      char sbuf[2000];
       sprintf(sbuf, "can't open file `%s'\n", buf);
       terminate(sbuf);
     }

@@ -56,9 +56,9 @@ void update_type_two_coordinate_and_velocity(int tree, int i, int centralgal)
         size_t header_offset = 4 * sizeof(int) + 2 * TotSnaps * sizeof(int) + 2 * TotSnaps * Ntrees * sizeof(int) + 2
             * sizeof(int) * NtotHalos;
 
-        IdList = (long long *) (TreeAuxData + header_offset);
-        PosList = (float *) (TreeAuxData + header_offset + TotIds * sizeof(long long));
-        VelList = (float *) (TreeAuxData + header_offset + TotIds * sizeof(long long) + TotIds * 3 * sizeof(float));
+        IdList = (long long *) ((char*)TreeAuxData + header_offset);
+        PosList = (float *) ((char*)TreeAuxData + header_offset + TotIds * sizeof(long long));
+        VelList = (float *) ((char*)TreeAuxData + header_offset + TotIds * sizeof(long long) + TotIds * 3 * sizeof(float));
 
         IdList += OffsetIDs;
         PosList += 3 * OffsetIDs;
@@ -217,14 +217,14 @@ void load_all_auxdata(int filenr)
 
   if(stat(buf, &filestatus) != 0)                  /* seems not to exist */
     {
-      char sbuf[1000];
+      char sbuf[1500];
       sprintf(sbuf, "Can't open file `%s'\n", buf);
       terminate(sbuf);
     }
 
   if(!(fd = fopen(buf, "r")))
     {
-      char sbuf[1000];
+      char sbuf[1500];
       sprintf(sbuf, "Can't open file `%s'\n", buf);
       terminate(sbuf);
     }

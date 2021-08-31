@@ -26,7 +26,7 @@ constexpr auto MIN_ALLOC_NUMBER=1000;
 constexpr auto ALLOC_INCREASE_FACTOR=1.1;
 constexpr auto ALLOC_DECREASE_FACTOR=0.7;
 
-#define PRECISION_LIMIT 1.e-7
+constexpr auto PRECISION_LIMIT=1.e-7;
 
 template <typename T, typename U>
 static auto wrap(T x,U y) {
@@ -119,12 +119,12 @@ constexpr auto  SEC_PER_YEAR       =3.155e7;
 
 
 #ifdef STAR_FORMATION_HISTORY
-#define SFH_NMERGE 3  //  SFH_NMERGE=Nmax+1 (Nmax used in Shamshiri2014)
+constexpr auto SFH_NMERGE=3;  //  SFH_NMERGE=Nmax+1 (Nmax used in Shamshiri2014)
 
 #ifdef CATERPILLAR
-#define SFH_NBIN 24 //  CATERPILLAR - 256 snapshots
+constexpr auto SFH_NBIN=24; //  CATERPILLAR - 256 snapshots
 #else
-#define SFH_NBIN 20
+constexpr auto SFH_NBIN=20;
 #endif //CATERPILLAR
 
 #endif //STAR_FORMATION_HISTORY
@@ -161,9 +161,9 @@ struct elements
 };
 //Number of chemical elements tracked:
 #ifndef MAINELEMENTS
-#define NUM_ELEMENTS 11 //All: [H][He][C][N][O][Ne][Mg][Si][S][Ca][Fe]
+constexpr auto NUM_ELEMENTS=11; //All: [H][He][C][N][O][Ne][Mg][Si][S][Ca][Fe]
 #else
-#define NUM_ELEMENTS 5 //Only [H][He][O][Mg][Fe]
+constexpr auto NUM_ELEMENTS=5; //Only [H][He][O][Mg][Fe]
 #endif
 
 #endif //INDIVIDUAL_ELEMENTS
@@ -927,32 +927,32 @@ extern double tau_dt[STEPS*MAXSNAPS];//Width of every timestep in the code. (Use
 #ifdef DETAILED_METALS_AND_MASS_RETURN
 
 //Number of interpolated points within the mass ranges for the four types of yield table:
-#define LIFETIME_MASS_NUM 150
-#define LIFETIME_Z_NUM 6
-#define AGB_MASS_NUM 59 //55 //ROB: 59, when going from 0.85 to 7 Msun
-#define AGB_Z_NUM 3
+constexpr auto LIFETIME_MASS_NUM=150;
+constexpr auto LIFETIME_Z_NUM=6;
+constexpr auto AGB_MASS_NUM=59; //55 //ROB: 59, when going from 0.85 to 7 Msun
+constexpr auto AGB_Z_NUM=3;
 #ifdef PORTINARI
-#define SNII_MASS_NUM 85  //ROB: 85, from 6 <= M[Msun] <= 120. Change SNII_MIN_MASS and SNII_MAX_MASS for shorter ranges.
-#define SNII_Z_NUM 5
+constexpr auto SNII_MASS_NUM=85;  //ROB: 85, from 6 <= M[Msun] <= 120. Change SNII_MIN_MASS and SNII_MAX_MASS for shorter ranges.
+constexpr auto SNII_Z_NUM=5;
 #endif
 #ifdef CHIEFFI
-#define SNII_MASS_NUM 81 //ROB: 56 if 7 <= M[Msun] <= 50. 81 if 7 <= M[Msun] <= 120. (NB: You can set SNII_MASS_NUM 81, and SNII_MAX_MASS 50. But DON"T put SNII_MASS_NUM > 81 ever!)
-#define SNII_Z_NUM 6
+constexpr auto SNII_MASS_NUM=81; //ROB: 56 if 7 <= M[Msun] <= 50. 81 if 7 <= M[Msun] <= 120. (NB: You can set SNII_MASS_NUM 81, and SNII_MAX_MASS 50. But DON"T put SNII_MASS_NUM > 81 ever!)
+constexpr auto SNII_Z_NUM=6;
 #endif
-#define SNIA_MASS_NUM 83 //48 //Number increased after extending range to cover M2 masses (07-02-12)
+constexpr auto SNIA_MASS_NUM=83; //48 //Number increased after extending range to cover M2 masses (07-02-12)
 
 //Mass ranges for the different modes of ejection:
-#define AGB_MIN_MASS 0.85
-#define AGB_MAX_MASS 7.0 //6.0
-#define SNIA_MIN_MASS 3.0
-#define SNIA_MAX_MASS 16.0
+constexpr auto AGB_MIN_MASS =0.85;
+constexpr auto AGB_MAX_MASS =7.0; //6.0
+constexpr auto SNIA_MIN_MASS =3.0;
+constexpr auto SNIA_MAX_MASS =16.0;
 #ifdef PORTINARI
-#define SNII_MIN_MASS 7.0 //6.0
-#define SNII_MAX_MASS 120.0
+constexpr auto SNII_MIN_MASS =7.0; //6.0
+constexpr auto SNII_MAX_MASS =120.0;
 #endif
 #ifdef CHIEFFI
-#define SNII_MIN_MASS 7.0
-#define SNII_MAX_MASS 120.0 //50.0
+constexpr auto SNII_MIN_MASS =7.0;
+constexpr auto SNII_MAX_MASS =120.0; //50.0
 #endif
 
 int ELETOBIGCOUNTA;
@@ -1010,32 +1010,32 @@ float SNIaRate2[STEPS*MAXSNAPS][LIFETIME_Z_NUM];
 float AGBRate2[STEPS*MAXSNAPS][LIFETIME_Z_NUM];
 
 //SNIa parameters:
-#define A_FACTOR 0.04 //Fraction of mass from all objects between SNIa_MIN_MASS and SNIA_MAX_MASS that comes from SN-Ia.
-//#define FRAC2HOT 0.9 //Fraction of material released by disk stars that goes straight into the HotGas. Res goes in ColdGas.
+constexpr auto A_FACTOR= 0.04; //Fraction of mass from all objects between SNIa_MIN_MASS and SNIA_MAX_MASS that comes from SN-Ia.
+//constexpr auto FRAC2HOT 0.9 //Fraction of material released by disk stars that goes straight into the HotGas. Res goes in ColdGas.
 #ifdef DTD
-//#define KALPHA 1.4765 //1.59203 //Now set in yield_integrals.c
-//#define	F316 0.0384 //Integral of the IMF (by number) from 3.0 - 16.0 Msun //Now set in yield_integrals.c
-#define SNIAEJECMASS 1.2300971 //Total mass (and total metals) ejected by a SNIa explosion in Msun //Value form original yield table (42 elements): 1.3740855. //Value when only considering 11 elements: 1.2300971
+//constexpr auto KALPHA 1.4765 //1.59203 //Now set in yield_integrals.c
+//constexpr auto	F316 0.0384 //Integral of the IMF (by number) from 3.0 - 16.0 Msun //Now set in yield_integrals.c
+constexpr auto SNIAEJECMASS =1.2300971; //Total mass (and total metals) ejected by a SNIa explosion in Msun //Value form original yield table (42 elements): 1.3740855. //Value when only considering 11 elements: 1.2300971
 #ifdef BIMODALDTD
-	#define DTD_NORM 0.903206 //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
+	constexpr auto DTD_NORM =0.903206; //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
 #endif
 #ifdef CUSTOMDTD
-	#define DTD_NORM 0.524836 //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
+	constexpr auto DTD_NORM =0.524836; //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
 #endif
 #ifdef GAUSSIANDTD
-	#define DTD_NORM = 1.0
-	#define TAUCHARAC 1.0 //Characteristic delay time for SNe-Ia (i.e. peak of Gaussian distribution) in Gyrs //default: 2.0
-	#define SIGMA_TD 0.2*TAUCHARAC //0.2 for narrow-DTD, 0.5 for wide_DTD
+	constexpr auto DTD_NORM = 1.0;
+	constexpr auto TAUCHARAC =1.0; //Characteristic delay time for SNe-Ia (i.e. peak of Gaussian distribution) in Gyrs //default: 2.0
+	constexpr auto SIGMA_TD= 0.2*TAUCHARAC; //0.2 for narrow-DTD, 0.5 for wide_DTD
 #endif
 #ifdef POWERLAWDTD
-	#define DTD_NORM 7.21863 //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
-	#define DTD_SLOPE -1.12 //Slope of power law, according to Maoz et al. (2012)
+	constexpr auto DTD_NORM= 7.21863; //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
+	constexpr auto DTD_SLOPE= -1.12; //Slope of power law, according to Maoz et al. (2012)
 #endif
 #ifdef RUITERDTD
-	#define DTD_NORM 1.09545 //For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
-	#define TAUCHARAC 0.5 //Peak of Gaussian (prompt) component [in Gyrs]
-	#define SIGMA_TD 0.2*TAUCHARAC //Width of Gaussian (prompt) component
-	#define DTD_SLOPE -2.0 //Slope of power law (delayed) component (see Ruiter et al. 2012)
+	constexpr auto DTD_NORM =1.09545 ;//For P98 Z=0.02 lifetimes (26Myrs - 21Gyrs)
+	constexpr auto TAUCHARAC= 0.5; //Peak of Gaussian (prompt) component [in Gyrs]
+	constexpr auto SIGMA_TD= 0.2*TAUCHARAC; //Width of Gaussian (prompt) component
+	constexpr auto DTD_SLOPE= -2.0; //Slope of power law (delayed) component (see Ruiter et al. 2012)
 #endif
 #endif
 
@@ -1046,26 +1046,26 @@ float AGBRate2[STEPS*MAXSNAPS][LIFETIME_Z_NUM];
 // SSP PHOT_TABLES - magnitues of starburst population as a function of age
 
 #ifdef M05
-#define SSP_NAGES 220		// Age grid of the SSP tables
-#define SSP_NMETALLICITES 4			// Number of Metalicities used
+constexpr auto SSP_NAGES =220;		// Age grid of the SSP tables
+constexpr auto SSP_NMETALLICITES =4;			// Number of Metalicities used
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
-#define SSP_NLambda 1221
+constexpr auto SSP_NLambda =1221;
 #endif
 #endif
 
 #ifdef BC03
-#define SSP_NAGES 221		// Age grid of the SSP tables
-#define SSP_NMETALLICITES 6			// Number of Metalicities used
+constexpr auto SSP_NAGES =221;		// Age grid of the SSP tables
+constexpr auto SSP_NMETALLICITES =6;			// Number of Metalicities used
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
-#define SSP_NLambda 1221
+constexpr auto SSP_NLambda =1221;
 #endif
 #endif
 
 #ifdef CB07
-#define SSP_NAGES 221		// Age grid of the SSP tables
-#define SSP_NMETALLICITES 6			// Number of Metalicities used
+constexpr auto SSP_NAGES= 221;		// Age grid of the SSP tables
+constexpr auto SSP_NMETALLICITES= 6;			// Number of Metalicities used
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
-#define SSP_NLambda 1238
+constexpr auto SSP_NLambda =1238;
 #endif
 #endif
 
@@ -1079,23 +1079,23 @@ extern float LumTables[NMAG][SSP_NMETALLICITES][MAXSNAPS][SSP_NAGES];
 extern float FilterLambda[NMAG+1];//wavelength of each filter + 1 for V-band
 
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
-#define MAX_NLambdaFilter 1000
+constexpr auto MAX_NLambdaFilter= 1000;
 extern int NLambdaFilter[NMAG];
 //VEGA
-#define NLambdaVega 3303
+constexpr auto NLambdaVega =3303;
 #endif
 
 //DUST EXTINCTION
-#define ExpTauBCBulge 0.5	// constant extinction for young stars in bulges.
-#define MUWIDTH  0.2
-#define MUCENTER 0.3
+constexpr auto ExpTauBCBulge =0.5;	// constant extinction for young stars in bulges.
+constexpr auto MUWIDTH =0.2;
+constexpr auto MUCENTER =0.3;
 extern long mu_seed;
 
 #endif //COMPUTE_SPECPHOT_PROPERTIES
 
 /*For H2 formation recipe - Not Supported*/
-#define RHO_LEN 101
-#define Z_LEN 13
+constexpr auto RHO_LEN= 101;
+constexpr auto Z_LEN= 13;
 
 extern size_t HighMark;
 
@@ -1129,7 +1129,4 @@ extern FILE *treedbids_file;
 extern FILE *FdGalTree;
 extern FILE *FdGalTreeSFH;
 extern FILE *FdGalDumps[NOUT];
-
-
-
 
