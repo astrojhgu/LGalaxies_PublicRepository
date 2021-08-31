@@ -23,7 +23,7 @@
 #include "proto.h"
 
 
-#define TABSIZE 91
+constexpr auto TABSIZE=91;
 
 
 static const char *name[] = {

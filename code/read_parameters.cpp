@@ -26,10 +26,10 @@
 #include "mcmc_proto.h"
 #endif
 
-#define DOUBLE 1
-#define STRING 2
-#define INT 3
-#define MAXTAGS 300
+constexpr auto DOUBLE =1;
+constexpr auto STRING =2;
+constexpr auto INT =3;
+constexpr auto MAXTAGS =300;
 
 /**@file read_parameters.c reads all the parameters in input.par into global variables
  *       that can be used by the code. */

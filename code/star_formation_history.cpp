@@ -30,8 +30,8 @@
  * are the time till present.
  *
  * Number of time bins needed:
- * #define SFH_NMERGE 3
- * #define SFH_NBIN 19
+ //* #define SFH_NMERGE 3
+ //* #define SFH_NBIN 19
  * At worst there are SFH_NMERGE-1 bins of each size.
  * So set SFH_NBIN to the smallest integer greater than
  * (SFH_NMERGE-1)log_2(MAXSNAPS*STEPS/(SFH_NMERGE-1)+1)

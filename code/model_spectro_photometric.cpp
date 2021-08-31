@@ -343,7 +343,7 @@ void setup_Spec_LumTables_onthefly(void)
 #endif //SPEC_PHOTABLES_ON_THE_FLY
 
 
-#define NJUMPTAB 1000
+constexpr auto NJUMPTAB=1000;
 int jumptab[NJUMPTAB];
 double jumpfac;
 

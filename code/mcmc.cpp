@@ -31,15 +31,15 @@
 #include "mcmc_vars.h"
 #include "mcmc_proto.h"
 
-#define IA 16807
-#define IM 2147483647
-#define AM (1.0/IM)
-#define IQ 127773
-#define IR 2836
-#define NTAB 32
-#define NDIV (1+(IM-1)/NTAB)
-#define RNMX (1.0-EPS)
-#define EPS 1.2e-7
+constexpr auto IA= 16807;
+constexpr auto IM= 2147483647;
+constexpr auto AM= (1.0/IM);
+constexpr auto IQ= 127773;
+constexpr auto IR= 2836;
+constexpr auto NTAB= 32;
+constexpr auto NDIV= (1+(IM-1)/NTAB);
+constexpr auto RNMX= (1.0-EPS);
+constexpr auto EPS= 1.2e-7;
 
 /**@file mcmc.c
  * @brief This is the main mcmc file, it reads in observational tests,

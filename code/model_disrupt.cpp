@@ -223,8 +223,8 @@ double sat_radius(int p)
   double r, rd, rb, Mdisk, Sigma0, rmin, rmax, rbin, M;
   double Mgas, Mbulge, rgd, Sigma0_g, rmi, rma, dr, totmass, Mvir, Rvir, tmprmax;
   int N = 100., ii;
-  #define SAT_RADIUS_RMIN 5e-7
-  #define SAT_RADIUS_N 100
+  constexpr auto SAT_RADIUS_RMIN=5e-7;
+  constexpr auto SAT_RADIUS_N=100;
 
   r=0.;
   rgd = Gal[p].GasDiskRadius/3.;

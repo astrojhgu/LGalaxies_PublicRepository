@@ -45,7 +45,7 @@ extern "C" {
 #endif
 
 /* MPFIT version string */
-#define MPFIT_VERSION "1.2"
+constexpr auto MPFIT_VERSION="1.2";
 
 /* Definition of a parameter constraint structure */
 struct mp_par_struct {
@@ -150,41 +150,41 @@ typedef int (*mp_func)(int m, /* Number of functions (elts of fvec) */
 		       void *private_data); /* I/O - function private data*/
 
 /* Error codes */
-#define MP_ERR_INPUT (0)         /* General input parameter error */
-#define MP_ERR_NAN (-16)         /* User function produced non-finite values */
-#define MP_ERR_FUNC (-17)        /* No user function was supplied */
-#define MP_ERR_NPOINTS (-18)     /* No user data points were supplied */
-#define MP_ERR_NFREE (-19)       /* No free parameters */
-#define MP_ERR_MEMORY (-20)      /* Memory allocation error */
-#define MP_ERR_INITBOUNDS (-21)  /* Initial values inconsistent w constraints*/
-#define MP_ERR_BOUNDS (-22)      /* Initial constraints inconsistent */
-#define MP_ERR_PARAM (-23)       /* General input parameter error */
-#define MP_ERR_DOF (-24)         /* Not enough degrees of freedom */
+constexpr auto MP_ERR_INPUT =(0);         /* General input parameter error */
+constexpr auto MP_ERR_NAN=(-16);         /* User function produced non-finite values */
+constexpr auto MP_ERR_FUNC=(-17);        /* No user function was supplied */
+constexpr auto MP_ERR_NPOINTS=(-18);     /* No user data points were supplied */
+constexpr auto MP_ERR_NFREE= (-19);       /* No free parameters */
+constexpr auto MP_ERR_MEMORY= (-20);      /* Memory allocation error */
+constexpr auto MP_ERR_INITBOUNDS= (-21);  /* Initial values inconsistent w constraints*/
+constexpr auto MP_ERR_BOUNDS= (-22);      /* Initial constraints inconsistent */
+constexpr auto MP_ERR_PARAM= (-23);       /* General input parameter error */
+constexpr auto MP_ERR_DOF= (-24);         /* Not enough degrees of freedom */
 
 /* Potential success status codes */
-#define MP_OK_CHI (1)            /* Convergence in chi-square value */
-#define MP_OK_PAR (2)            /* Convergence in parameter value */
-#define MP_OK_BOTH (3)           /* Both MP_OK_PAR and MP_OK_CHI hold */
-#define MP_OK_DIR (4)            /* Convergence in orthogonality */
-#define MP_MAXITER (5)           /* Maximum number of iterations reached */
-#define MP_FTOL (6)              /* ftol is too small; no further improvement*/
-#define MP_XTOL (7)              /* xtol is too small; no further improvement*/
-#define MP_GTOL (8)              /* gtol is too small; no further improvement*/
+constexpr auto MP_OK_CHI= (1);            /* Convergence in chi-square value */
+constexpr auto MP_OK_PAR= (2);            /* Convergence in parameter value */
+constexpr auto MP_OK_BOTH= (3);           /* Both MP_OK_PAR and MP_OK_CHI hold */
+constexpr auto MP_OK_DIR= (4);            /* Convergence in orthogonality */
+constexpr auto MP_MAXITER= (5);           /* Maximum number of iterations reached */
+constexpr auto MP_FTOL= (6);              /* ftol is too small; no further improvement*/
+constexpr auto MP_XTOL= (7);              /* xtol is too small; no further improvement*/
+constexpr auto MP_GTOL= (8);              /* gtol is too small; no further improvement*/
 
 /* Double precision numeric constants */
-#define MP_MACHEP0 2.2204460e-16
-#define MP_DWARF   2.2250739e-308
-#define MP_GIANT   1.7976931e+308
+constexpr auto MP_MACHEP0= 2.2204460e-16;
+constexpr auto MP_DWARF=   2.2250739e-308;
+constexpr auto MP_GIANT =  1.7976931e+308;
 
 #if 0
 /* Float precision */
-#define MP_MACHEP0 1.19209e-07
-#define MP_DWARF   1.17549e-38
-#define MP_GIANT   3.40282e+38
+constexpr auto MP_MACHEP0= 1.19209e-07;
+constexpr auto MP_DWARF=   1.17549e-38;
+constexpr auto MP_GIANT =  3.40282e+38;
 #endif
 
-#define MP_RDWARF  (sqrt(MP_DWARF*1.5)*10)
-#define MP_RGIANT  (sqrt(MP_GIANT)*0.1)
+constexpr auto MP_RDWARF=  (sqrt(MP_DWARF*1.5)*10);
+constexpr auto MP_RGIANT=  (sqrt(MP_GIANT)*0.1);
 
 
 /* External function prototype declarations */

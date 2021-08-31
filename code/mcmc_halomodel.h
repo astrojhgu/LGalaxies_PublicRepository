@@ -18,8 +18,9 @@
  *      Author: Marcel van Daalen
  */
 
-#define SQR(a) ((a)*(a))
-#define CUB(a) ((a)*(a)*(a))
+
+//#define SQR(a) ((a)*(a))
+//#define CUB(a) ((a)*(a)*(a))
 
 void halomodel(double* r_arr,double* proj_arr,float masslimit_low,float
 masslimit_high,int snap);

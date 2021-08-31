@@ -36,15 +36,15 @@
 // Variables for the MCMC sampling
 
 int MCMCNpar; //Number of parameters to sample
-#define MCMCNConstraints 27  //Nr of Observational Constraints
-#define MCMCMaxObsBins 100 //maximum number of bins per observation per redshift
+constexpr auto MCMCNConstraints= 27;  //Nr of Observational Constraints
+constexpr auto MCMCMaxObsBins= 100; //maximum number of bins per observation per redshift
 
 double MCMCConstraintsZZ[NOUT];
 //Nr of SAM galaxies used to compare with data
 int TotMCMCGals[NOUT];
 //To allocate structure with SAM Galaxies
-#define MCMCAllocFactor 200000
-//#define MCMCAllocFactor 1000000
+constexpr auto MCMCAllocFactor= 200000;
+//constexpr auto MCMCAllocFactor= 1000000;
 long MCMCseed;
 int Nbins[NOUT][MCMCNConstraints]; //bins on each obs test
 double lhood1;
@@ -176,10 +176,10 @@ struct MCMC_FOF_struct
 int *HashTable;
 
 int NR;
-#define massbins 65
+constexpr auto massbins= 65;
 
-#define minfofmass 9.5
-#define maxfofmass 16.
+constexpr auto minfofmass= 9.5;
+constexpr auto maxfofmass= 16.;
 
 int NTasks,ThisTask;
 int* numbymass;
@@ -190,9 +190,9 @@ int offset,numrad;
 double Norm;
 double rho_mean,Mstar,Rstar,Delta_invth,rho_c,delta_c;
 
-//#define rho_c 2.775e11 //recalculated value (3*H^2/8*PI*G in units of (Msun/h)/(Mpc/h)^3)
-#define  Delta 200.
-//#define delta_c 1.674 //Millennium cosmology
+//constexpr auto rho_c= 2.775e11; //recalculated value (3*H^2/8*PI*G in units of (Msun/h)/(Mpc/h)^3)
+constexpr auto  Delta= 200.;
+//constexpr auto delta_c 1.674 //Millennium cosmology
 //double G=4.302e-9;
 
 double ngal_mean;

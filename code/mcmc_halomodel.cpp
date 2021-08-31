@@ -43,26 +43,26 @@
 #include "mcmc_halomodel.h"
 #include "mcmc_mpfit.h"
 
-#define WORKSIZE 100000
-#define PI 3.14159
-#define xmin 0.0
+constexpr auto WORKSIZE =100000;
+constexpr auto PI =3.14159;
+constexpr auto xmin= 0.0;
 #ifdef MCRIT
-#define xmax 6
+constexpr auto xmax= 6;
 #else
-#define xmax 5.
+constexpr auto xmax= 5.;
 #endif
-#define pow_ns 1.00
-#define kmax 1e4
+constexpr auto pow_ns= 1.00;
+constexpr auto kmax= 1e4;
 #ifdef PROJLIMITS
-#define pimin 0.0
-#define pimax 40.0
+constexpr auto pimin= 0.0;
+constexpr auto pimax= 40.0;
 #endif
-#define pa_low -2.0
-#define pa_high 0.47712125 //log10(3)
-#define pb_low -1.0
-#define pb_high 1.0
-#define pc_low -1.0
-#define pc_high 1.5
+constexpr auto pa_low= -2.0;
+constexpr auto pa_high= 0.47712125; //log10(3)
+constexpr auto pb_low= -1.0;
+constexpr auto pb_high= 1.0;
+constexpr auto pc_low= -1.0;
+constexpr auto pc_high= 1.5;
 
 void halomodel(double* r_arr,double* proj_arr,float masslimit_low, float masslimit_high,int snap) {
   int i;

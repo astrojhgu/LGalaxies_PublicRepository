@@ -26,8 +26,8 @@
 #include "proto.h"
 
 
-#define MAXBLOCKS 5000
-#define MAXCHARS  16
+constexpr auto MAXBLOCKS=5000;
+constexpr auto MAXCHARS =16;
 
 static size_t TotBytes;
 static void *Base;

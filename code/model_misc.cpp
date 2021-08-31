@@ -1651,7 +1651,7 @@ void nrerror(const char error_text[])
   exit(1);
 }
 
-#define NREND 1
+constexpr auto NREND=1;
 #define FREE_ARG char*
 
 double *vector(long nl, long nh)

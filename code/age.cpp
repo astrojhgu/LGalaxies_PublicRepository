@@ -33,7 +33,7 @@
 
 double time_to_present(double z)
 {
-#define WORKSIZE 1000
+constexpr auto WORKSIZE=1000;
   gsl_function F;
   gsl_integration_workspace *workspace;
   double time, result, abserr;
