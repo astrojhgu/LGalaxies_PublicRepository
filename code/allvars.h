@@ -18,21 +18,30 @@
 #ifndef ALLVARS_H
 #define ALLVARS_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <gsl/gsl_rng.h>
-#include <time.h>
+#include <ctime>
 
-#define MIN_ALLOC_NUMBER       1000
-#define ALLOC_INCREASE_FACTOR  1.1
-#define ALLOC_DECREASE_FACTOR  0.7
+constexpr auto MIN_ALLOC_NUMBER=1000;
+constexpr auto ALLOC_INCREASE_FACTOR=1.1;
+constexpr auto ALLOC_DECREASE_FACTOR=0.7;
 
 #define PRECISION_LIMIT 1.e-7
 
-#define  min(x,y)  ((x)<(y) ?(x):(y))
-#define  max(x,y)  ((x)>(y) ?(x):(y))
-#define  wrap(x,y) ( (x)>((y)/2.) ? ((x)-(y)) : ((x)<(-(y)/2.)?((x)+(y)):(x)) )
-#define  pow2(x)   ((x)*(x))
-#define  pow3(x)   ((x)*(x)*(x))
+template <typename T, typename U>
+static auto wrap(T x,U y) {
+  return x>(y)/2 ? ((x)-(y)) : ((x)<(-(y)/2.)?((x)+(y)):(x)) ;
+} 
+
+template <typename T>
+static auto pow2(T x){
+  return x*x;
+}
+
+template <typename T>
+static auto pow3(T x){
+  return x*x*x;
+}
 
 #define  terminate(x) {char termbuf[5000]; sprintf(termbuf, "code termination on task=%d, function %s(), file %s, line %d: %s\n", ThisTask, __FUNCTION__, __FILE__, __LINE__, x); printf("%s", termbuf); fflush(stdout); endrun(1);}
 
@@ -59,50 +68,49 @@
 //WATCH OUT! In the case of MCMC running both MR and MRII the larger value is used to "allocate" all the arrays
 //inside the code its LastDarkMatterSnapShot+1 that defines the extent of the loops
 //(in MCMC MR_plus_MRII mode this are not always identical)
+
+constexpr auto MAXSNAPS=
 #ifdef MRII
-#define  MAXSNAPS  68     /* Number of snapshots in the dark matter simulation */
+68     /* Number of snapshots in the dark matter simulation */
 #else
-
 #ifdef PHOENIX
-#define  MAXSNAPS  72
+72
 #else
-
 #ifdef CATERPILLAR
-#define  MAXSNAPS  256
+256
 #else
-
-#define  MAXSNAPS  64  //NORMAL MILLENNIUM
-
+64  //NORMAL MILLENNIUM
 #endif //CATERPILLAR
 #endif //PHOENIX
 #endif //MRII
+;  //do not miss this ;!!!
 
-#define  MAXGALFAC 2.3 /*1.5/2.3 - maximum fraction of satellite without a halo (for memory allocation)*/
+constexpr auto MAXGALFAC=2.3; /*1.5/2.3 - maximum fraction of satellite without a halo (for memory allocation)*/
 
-#define  STEPS 20		/* Number of integration intervals between two snapshots */
+constexpr auto STEPS=20;		/* Number of integration intervals between two snapshots */
 
-#define  ALLOCPARAMETER 50.  /* new definition !!! THIS HAS TO BE 50 !!! DONT EVER EVER EVER CHANGE !!! */
-
-//To understand the units in the code read through set_units in init.c!!!
-#define  GRAVITY     6.672e-8
-#define  SOLAR_MASS  1.989e33
-#define  SOLAR_LUM   3.826e33
-#define  RAD_CONST   7.565e-15
-#define  AVOGADRO    6.0222e23
-#define  BOLTZMANN   1.3806e-16
-#define  GAS_CONST   8.31425e7
-#define  C           2.9979e10
-#define  PLANCK      6.6262e-27
-#define  PROTONMASS  1.6726e-24
-#define  HUBBLE      3.2407789e-18   /* in h/sec */
+constexpr auto ALLOCPARAMETER=50.;  /* new definition !!! THIS HAS TO BE 50 !!! DONT EVER EVER EVER CHANGE !!! */
 
 //To understand the units in the code read through set_units in init.c!!!
+constexpr auto  GRAVITY     =6.672e-8;
+constexpr auto  SOLAR_MASS  =1.989e33;
+constexpr auto  SOLAR_LUM   =3.826e33;
+constexpr auto  RAD_CONST   =7.565e-15;
+constexpr auto  AVOGADRO    =6.0222e23;
+constexpr auto  BOLTZMANN   =1.3806e-16;
+constexpr auto  GAS_CONST   =8.31425e7;
+constexpr auto  C           =2.9979e10;
+constexpr auto  PLANCK      =6.6262e-27;
+constexpr auto  PROTONMASS  =1.6726e-24;
+constexpr auto  HUBBLE      =3.2407789e-18;   /* in h/sec */
 
-#define UNITLENGTH_IN_CM                   3.08568e+24	// Mpc - WATCH OUT, distances in the code are in Mpc/h
-#define UNITMASS_IN_G                      1.989e+43	// 10^10Msun - WATCH OUT, masses in the code are in 10^10Msun/h
-#define UNITVELOCITY_IN_CM_PER_S           100000	// Km/s - WATCH OUT, this are the correct units in the code km/s
-#define  SEC_PER_MEGAYEAR   3.155e13
-#define  SEC_PER_YEAR       3.155e7
+//To understand the units in the code read through set_units in init.c!!!
+
+constexpr auto UNITLENGTH_IN_CM                   =3.08568e+24;	// Mpc - WATCH OUT, distances in the code are in Mpc/h
+constexpr auto UNITMASS_IN_G                      =1.989e+43;	// 10^10Msun - WATCH OUT, masses in the code are in 10^10Msun/h
+constexpr auto UNITVELOCITY_IN_CM_PER_S           =100000;	// Km/s - WATCH OUT, this are the correct units in the code km/s
+constexpr auto  SEC_PER_MEGAYEAR   =3.155e13;
+constexpr auto  SEC_PER_YEAR       =3.155e7;
 
 #ifdef GALAXYTREE
 #undef  NOUT
@@ -439,7 +447,7 @@ struct SFH_Time
 #pragma pack()   //structure alignment ends.
 #endif //When LIGHT_OUTPUT is not defined
 
-struct galaxy_tree_data
+extern struct galaxy_tree_data
 {
   int HaloGalIndex;
   int IndexStored;
@@ -457,7 +465,7 @@ struct galaxy_tree_data
  *GalTree;
 
 /*Structure with all the data associated with galaxies (this is not the same as the output!)*/
-struct GALAXY			/* Galaxy data */
+extern struct GALAXY			/* Galaxy data */
 {
   int HeapIndex;
   int GalTreeIndex;
@@ -644,7 +652,7 @@ struct GALAXY			/* Galaxy data */
 
 
 // Documentation can be found in the database
-struct halo_data
+extern struct halo_data
 {
 	/* merger tree pointers */
 	int Descendant;
@@ -668,8 +676,7 @@ struct halo_data
 	int FileNr;
 	int SubhaloIndex;
 	float SubHalfMass;
-}
-  *Halo, *Halo_Data;
+}  *Halo, *Halo_Data;
 
 
 // Documentation can be found in the database
@@ -700,7 +707,7 @@ extern struct  halo_ids_data
 
 
 // Documentation can be found in the database
-struct halo_aux_data  /* auxiliary halo data */
+extern struct halo_aux_data  /* auxiliary halo data */
 {
 	int DoneFlag;
 	int HaloFlag;
@@ -712,8 +719,7 @@ struct halo_aux_data  /* auxiliary halo data */
 	float Vel_Unscaled[3];
 	float Vmax_Unscaled;
 	float Spin_Unscaled[3];
-}
- *HaloAux;
+} *HaloAux;
 
 
 extern int FirstFile;		/* first and last file for processing */

@@ -269,7 +269,7 @@ int set_merger_center(int fofhalo);
 void transfer_stars(int p, char cp[], int q, char cq[], double fraction);
 void transfer_gas(int p, char cp[], int q, char cq[], double fraction, char call_function[], int line);
 void deal_with_satellites(int centralgal, int ngal);
-void mass_checks(char string[], int igal) ;
+void mass_checks(const char* string, int igal) ;
 
 #ifdef STAR_FORMATION_HISTORY
 void sfh_initialise(int p);
