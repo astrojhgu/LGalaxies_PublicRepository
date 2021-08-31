@@ -13,9 +13,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/> */
 
+#include <vector>
+using namespace std;
 
 #include "allvars.h"
-
 
 struct GALAXY			/* Galaxy data */
  *Gal, *HaloGal;
@@ -212,11 +213,37 @@ int NumMergers;
 /* fixed-metallicity spectrophotometric model */
 /* tables hold magnitues of starburst population as a function of age */
 
+
+template<typename T>
+std::vector<std::vector<T>> data_matrix(size_t w, size_t d){
+  std::vector<std::vector<T>> result;
+  result.reserve(w);
+  for(int i=0;i<w;++i){
+    result.push_back(std::vector<T>(d));
+  }
+  return result;
+}
+
+template<typename T>
+std::vector<std::vector<std::vector<T>>> data_cube(size_t h, size_t w, size_t d){
+  std::vector<std::vector<std::vector<T>>> result;
+  result.reserve(h);
+  for(int i=0;i<h;++i){
+    result.push_back(data_matrix<T>(w, d));
+  }
+  return result;
+}
+
+
 #ifdef STAR_FORMATION_HISTORY
-double SFH_t[MAXSNAPS][STEPS][SFH_NBIN];
-double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN];
-int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN];
-int SFH_ibin[MAXSNAPS][STEPS];
+//double SFH_t[MAXSNAPS][STEPS][SFH_NBIN];
+std::vector<std::vector<std::vector<double>>> SFH_t=data_cube<double>(MAXSNAPS, STEPS, SFH_NBIN);
+//double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN];
+std::vector<std::vector<std::vector<double>>> SFH_dt=data_cube<double>(MAXSNAPS, STEPS, SFH_NBIN);
+//int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN];
+std::vector<std::vector<std::vector<int>>> SFH_Nbins=data_cube<int>(MAXSNAPS, STEPS, SFH_NBIN);
+//int SFH_ibin[MAXSNAPS][STEPS];
+std::vector<std::vector<int>> SFH_ibin=data_matrix<int>(MAXSNAPS, STEPS);
 #ifdef DETAILED_METALS_AND_MASS_RETURN
 double tau_t[STEPS*MAXSNAPS]; //Time-to-z=0 of every timestep in the code. (Used for SNe rates in yield_integrals.c)
 double tau_dt[STEPS*MAXSNAPS];//Width of every timestep in the code. (Used for SNe rates in yield_integrals.c)

@@ -22,7 +22,7 @@ FileWithFilterNames       ./input/Filter_Names.txt
 
 SimulationDir	        ./MergerTrees/MRII/
 
-LastDarkMatterSnapShot  67
+LastDarkMatterSnapShot  64
 Hashbits                8     ;needed for Peano hilbert key output with the GALAXYTREE option
 
 OutputDir               ./output/

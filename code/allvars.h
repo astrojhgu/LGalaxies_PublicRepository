@@ -19,6 +19,7 @@
 #define ALLVARS_H
 
 #include <cstdio>
+#include <vector>
 #include <gsl/gsl_rng.h>
 #include <ctime>
 
@@ -913,10 +914,14 @@ extern int    NumMergers;
  * logarithmic bins. It is computed in init.c generating a binning structure for
  * each snapshot/time step. In the code galaxy structures are adjusted with respect
  * to this structure at each step. */
-extern double SFH_t[MAXSNAPS][STEPS][SFH_NBIN]; //Time to present at the lower edge of the bin (code units)
-extern double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN]; //Time width of the bin (code units)
-extern int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN]; //Number of bins merged in each bin (only useful for the merging algorithm)
-extern int SFH_ibin[MAXSNAPS][STEPS]; //Last active bin
+//extern double SFH_t[MAXSNAPS][STEPS][SFH_NBIN]; //Time to present at the lower edge of the bin (code units)
+extern std::vector<std::vector<std::vector<double>>> SFH_t;
+//extern double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN]; //Time width of the bin (code units)
+extern std::vector <std::vector<std::vector<double>>> SFH_dt;
+//extern int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN]; //Number of bins merged in each bin (only useful for the merging algorithm)
+extern std::vector<std::vector<std::vector<int>>> SFH_Nbins;
+//extern int SFH_ibin[MAXSNAPS][STEPS]; //Last active bin
+extern std::vector<std::vector<int>> SFH_ibin;
 #ifdef DETAILED_METALS_AND_MASS_RETURN
 extern double tau_t[STEPS*MAXSNAPS]; //Time-to-z=0 of every timestep in the code. (Used for SNe rates in yield_integrals.c)
 extern double tau_dt[STEPS*MAXSNAPS];//Width of every timestep in the code. (Used for SNe rates in yield_integrals.c)

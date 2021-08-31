@@ -43,11 +43,15 @@
  * On init.c:
  *   create_sfh_bins();
  * Generates the reference structure for storing the star formation histories in
- * logarithmic bins (for each snapshot/time step combination). In the code galaxy
+ * logarithmic bins (for each snapshot/time step combination). In the code
+ galaxy
  * structures are adjusted with respect to this structure at each step.
- * double SFH_t[MAXSNAPS][STEPS][SFH_NBIN]; //Time to present (i.e. z=0 ?) at the low-z edge of the bin (code units)
- * double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN]; //Time width of the bin (code units)
- * int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN]; //Number of bins merged in each bin (only useful for the merging algorithm)
+ * double SFH_t[MAXSNAPS][STEPS][SFH_NBIN]; //Time to present (i.e. z=0 ?) at
+ the low-z edge of the bin (code units)
+ * double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN]; //Time width of the bin (code
+ units)
+ * int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN]; //Number of bins merged in each bin
+ (only useful for the merging algorithm)
  * int SFH_ibin[MAXSNAPS][STEPS]; //Last active bin
  *
  * On initialising galaxy p:
@@ -84,49 +88,47 @@
  */
 
 #include <algorithm>
-
+#include <cassert>
 using namespace std;
 
 #include "allvars.h"
 #include "proto.h"
 
-void sfh_initialise(int p)
-{
+void sfh_initialise(int p) {
   /* Initialises the sfh-variables for a galaxy */
   int i;
 
-  for (i=0;i<SFH_NBIN;i++){
-    Gal[p].sfh_dt[i]=0.;
-    Gal[p].sfh_t[i]=0.;
-    Gal[p].sfh_flag[i]=0;
-    Gal[p].sfh_Nbins[i]=0;
-    Gal[p].sfh_DiskMass[i]=0.;
-    Gal[p].sfh_BulgeMass[i]=0.;
-    Gal[p].sfh_ICM[i]=0.;
-    Gal[p].sfh_MetalsDiskMass[i]=metals_init();
-    Gal[p].sfh_MetalsBulgeMass[i]=metals_init();
-    Gal[p].sfh_MetalsICM[i]=metals_init();
+  for (i = 0; i < SFH_NBIN; i++) {
+    Gal[p].sfh_dt[i] = 0.;
+    Gal[p].sfh_t[i] = 0.;
+    Gal[p].sfh_flag[i] = 0;
+    Gal[p].sfh_Nbins[i] = 0;
+    Gal[p].sfh_DiskMass[i] = 0.;
+    Gal[p].sfh_BulgeMass[i] = 0.;
+    Gal[p].sfh_ICM[i] = 0.;
+    Gal[p].sfh_MetalsDiskMass[i] = metals_init();
+    Gal[p].sfh_MetalsBulgeMass[i] = metals_init();
+    Gal[p].sfh_MetalsICM[i] = metals_init();
 #ifdef INDIVIDUAL_ELEMENTS
-    Gal[p].sfh_ElementsDiskMass[i]=elements_init();
-    Gal[p].sfh_ElementsBulgeMass[i]=elements_init();
-    Gal[p].sfh_ElementsICM[i]=elements_init();
+    Gal[p].sfh_ElementsDiskMass[i] = elements_init();
+    Gal[p].sfh_ElementsBulgeMass[i] = elements_init();
+    Gal[p].sfh_ElementsICM[i] = elements_init();
 #endif
 #ifdef TRACK_BURST
-    Gal[p].sfh_BurstMass[i]=0.;
+    Gal[p].sfh_BurstMass[i] = 0.;
 #endif
   }
 
   /* Create first bin */
-  Gal[p].sfh_ibin=0;
+  Gal[p].sfh_ibin = 0;
 
-  /* Age is used for comparing galaxies during mergers, 
-   * so needs to have a value set in case a merger happens before stars 
+  /* Age is used for comparing galaxies during mergers,
+   * so needs to have a value set in case a merger happens before stars
    * form (which can happen). */
-  Gal[p].sfh_age=0.;
+  Gal[p].sfh_age = 0.;
 }
 
-void sfh_merge(int p, int p1)
-{
+void sfh_merge(int p, int p1) {
   /* Merge galaxy p1 into galaxy p */
   int i;
 
@@ -138,41 +140,44 @@ void sfh_merge(int p, int p1)
     exit(1);
   }
 
-  /* The zero-ing of galaxy p1 here is not strictly necessary as galaxy p1 should
-   * cease to exist after merging, but helps to make mass conservation explicit. */
-  for(i=0;i<=Gal[p].sfh_ibin;i++) {
-    Gal[p].sfh_DiskMass[i]+=Gal[p1].sfh_DiskMass[i];
-    Gal[p].sfh_BulgeMass[i]+=Gal[p1].sfh_BulgeMass[i];
-    Gal[p].sfh_ICM[i]+=Gal[p1].sfh_ICM[i];
-    Gal[p1].sfh_DiskMass[i]=0.;
-    Gal[p1].sfh_BulgeMass[i]=0.;
-    Gal[p1].sfh_ICM[i]=0.;
-    Gal[p].sfh_MetalsDiskMass[i]=
-      metals_add(Gal[p].sfh_MetalsDiskMass[i],Gal[p1].sfh_MetalsDiskMass[i],1.);
-    Gal[p].sfh_MetalsBulgeMass[i]=
-      metals_add(Gal[p].sfh_MetalsBulgeMass[i],Gal[p1].sfh_MetalsBulgeMass[i],1.);
-    Gal[p].sfh_MetalsICM[i]=
-      metals_add(Gal[p].sfh_MetalsICM[i],Gal[p1].sfh_MetalsICM[i],1.);
-    Gal[p1].sfh_MetalsDiskMass[i]=metals_init();
-    Gal[p1].sfh_MetalsBulgeMass[i]=metals_init();
-    Gal[p1].sfh_MetalsICM[i]=metals_init();
+  /* The zero-ing of galaxy p1 here is not strictly necessary as galaxy p1
+   * should cease to exist after merging, but helps to make mass conservation
+   * explicit. */
+  for (i = 0; i <= Gal[p].sfh_ibin; i++) {
+    Gal[p].sfh_DiskMass[i] += Gal[p1].sfh_DiskMass[i];
+    Gal[p].sfh_BulgeMass[i] += Gal[p1].sfh_BulgeMass[i];
+    Gal[p].sfh_ICM[i] += Gal[p1].sfh_ICM[i];
+    Gal[p1].sfh_DiskMass[i] = 0.;
+    Gal[p1].sfh_BulgeMass[i] = 0.;
+    Gal[p1].sfh_ICM[i] = 0.;
+    Gal[p].sfh_MetalsDiskMass[i] = metals_add(
+        Gal[p].sfh_MetalsDiskMass[i], Gal[p1].sfh_MetalsDiskMass[i], 1.);
+    Gal[p].sfh_MetalsBulgeMass[i] = metals_add(
+        Gal[p].sfh_MetalsBulgeMass[i], Gal[p1].sfh_MetalsBulgeMass[i], 1.);
+    Gal[p].sfh_MetalsICM[i] =
+        metals_add(Gal[p].sfh_MetalsICM[i], Gal[p1].sfh_MetalsICM[i], 1.);
+    Gal[p1].sfh_MetalsDiskMass[i] = metals_init();
+    Gal[p1].sfh_MetalsBulgeMass[i] = metals_init();
+    Gal[p1].sfh_MetalsICM[i] = metals_init();
 #ifdef INDIVIDUAL_ELEMENTS
-    Gal[p].sfh_ElementsDiskMass[i] = elements_add(Gal[p].sfh_ElementsDiskMass[i],Gal[p1].sfh_ElementsDiskMass[i],1.);
-    Gal[p].sfh_ElementsBulgeMass[i] = elements_add(Gal[p].sfh_ElementsBulgeMass[i],Gal[p1].sfh_ElementsBulgeMass[i],1.);
-    Gal[p].sfh_ElementsICM[i] = elements_add(Gal[p].sfh_ElementsICM[i],Gal[p1].sfh_ElementsICM[i],1.);
-    Gal[p1].sfh_ElementsDiskMass[i]=elements_init();
-    Gal[p1].sfh_ElementsBulgeMass[i]=elements_init();
-    Gal[p1].sfh_ElementsICM[i]=elements_init();
+    Gal[p].sfh_ElementsDiskMass[i] = elements_add(
+        Gal[p].sfh_ElementsDiskMass[i], Gal[p1].sfh_ElementsDiskMass[i], 1.);
+    Gal[p].sfh_ElementsBulgeMass[i] = elements_add(
+        Gal[p].sfh_ElementsBulgeMass[i], Gal[p1].sfh_ElementsBulgeMass[i], 1.);
+    Gal[p].sfh_ElementsICM[i] =
+        elements_add(Gal[p].sfh_ElementsICM[i], Gal[p1].sfh_ElementsICM[i], 1.);
+    Gal[p1].sfh_ElementsDiskMass[i] = elements_init();
+    Gal[p1].sfh_ElementsBulgeMass[i] = elements_init();
+    Gal[p1].sfh_ElementsICM[i] = elements_init();
 #endif
 #ifdef TRACK_BURST
-    Gal[p].sfh_BurstMass[i]+=Gal[p1].sfh_BurstMass[i];
-    Gal[p1].sfh_BurstMass[i]=0.;
+    Gal[p].sfh_BurstMass[i] += Gal[p1].sfh_BurstMass[i];
+    Gal[p1].sfh_BurstMass[i] = 0.;
 #endif
   }
   /* Again, not strictly necessary, but safe. */
-  Gal[p1].sfh_ibin=0;
-  Gal[p1].sfh_age=0.;
-
+  Gal[p1].sfh_ibin = 0;
+  Gal[p1].sfh_age = 0.;
 }
 
 void sfh_print(int p) {
@@ -180,288 +185,308 @@ void sfh_print(int p) {
    * Does sum of Disk + Bulge only. */
   int i;
 
-  printf("For galaxy %d:\n",p);
-  printf("sfh_ibin=%d\n",Gal[p].sfh_ibin);
-  printf("sfh_age=%f\n",Gal[p].sfh_age);
+  printf("For galaxy %d:\n", p);
+  printf("sfh_ibin=%d\n", Gal[p].sfh_ibin);
+  printf("sfh_age=%f\n", Gal[p].sfh_age);
   printf("  i    dt   t      Stars      Metals\n");
-  for(i=0;i<SFH_NBIN;i++)
-    if (Gal[p].sfh_dt[i]!=0) {
-      printf("%5d %5e %5e %12f\n",i,Gal[p].sfh_dt[i],Gal[p].sfh_t[i],(Gal[p].sfh_DiskMass[i]+Gal[p].sfh_BulgeMass[i]));
-      metals_print("..",metals_add(Gal[p].sfh_MetalsDiskMass[i],Gal[p].sfh_MetalsBulgeMass[i],1.));
+  for (i = 0; i < SFH_NBIN; i++)
+    if (Gal[p].sfh_dt[i] != 0) {
+      printf("%5d %5e %5e %12f\n", i, Gal[p].sfh_dt[i], Gal[p].sfh_t[i],
+             (Gal[p].sfh_DiskMass[i] + Gal[p].sfh_BulgeMass[i]));
+      metals_print("..", metals_add(Gal[p].sfh_MetalsDiskMass[i],
+                                    Gal[p].sfh_MetalsBulgeMass[i], 1.));
 #ifdef INDIVIDUAL_ELEMENTS
-      elements_print("..",elements_add(Gal[p].sfh_ElementsDiskMass[i],Gal[p].sfh_ElementsBulgeMass[i],1.));
+      elements_print("..", elements_add(Gal[p].sfh_ElementsDiskMass[i],
+                                        Gal[p].sfh_ElementsBulgeMass[i], 1.));
 #endif
       printf(".......................\n");
     }
 }
 
-void create_sfh_bins()
-{
+void create_sfh_bins() {
+
   double previoustime, newtime, deltaT, time;
   int snap, step, sfh_ibin, i, j, sfh_Nbins[SFH_NBIN];
-  int ibin_max=0;
+  int ibin_max = 0;
   double sfh_t[SFH_NBIN];
+  assert(MAXSNAPS==64);
 
-  for(snap = 0; snap < MAXSNAPS; snap++) {
-      for(step=0;step < STEPS;step++) {
-	  for(j=0;j < SFH_NBIN;j++) {
-	      SFH_t[snap][step][j]=0;
-	      SFH_dt[snap][step][j]=0;
-	      SFH_ibin[snap][step]=0;
-	      SFH_Nbins[snap][step][j] = 0;
-	  }
+  for (snap = 0; snap < MAXSNAPS; snap++) {
+    for (step = 0; step < STEPS; step++) {
+      for (j = 0; j < SFH_NBIN; j++) {
+        SFH_t[snap][step][j] = 0;
+        SFH_dt[snap][step][j] = 0;
+        SFH_ibin[snap][step] = 0;
+        SFH_Nbins[snap][step][j] = 0;
       }
+    }
   }
 
-  for(i=0;i<SFH_NBIN;i++) {
-    sfh_Nbins[i]=0;
-    sfh_t[i]=0.;
+  for (i = 0; i < SFH_NBIN; i++) {
+    sfh_Nbins[i] = 0;
+    sfh_t[i] = 0.;
   }
-  sfh_ibin=0;
+  sfh_ibin = 0;
 
-	//for(snap=0;snap<(LastDarkMatterSnapShot+1)-1;snap++) {
-  for(snap=0;snap<(LastDarkMatterSnapShot+1);snap++) {
+  // for(snap=0;snap<(LastDarkMatterSnapShot+1)-1;snap++) {
+    printf("last darkmat %d\n", LastDarkMatterSnapShot);
+  for (snap = 0; snap < (LastDarkMatterSnapShot + 1); snap++) {
     previoustime = NumToTime(snap);
-    newtime = NumToTime(snap+1);
+    newtime = NumToTime(snap + 1);
     deltaT = previoustime - newtime;
 
-    for(step=0;step<STEPS;step++) {
+    for (step = 0; step < STEPS; step++) {
       int ibin;
       int flag_merged_bins; // Boolean used to check whether have merged bins
-      int dt_merge; // Size of bins that we are checking for merging
-      int n_merge; // Number of bins of this size
+      int dt_merge;         // Size of bins that we are checking for merging
+      int n_merge;          // Number of bins of this size
 
       time = previoustime - (step + 1.0) * (deltaT / STEPS);
-      ibin=sfh_ibin;
+      ibin = sfh_ibin;
 
-      //printf("sna=%d step=%d step time=%f time low=%f\n",
-      //		snap,step,(previoustime - (step + 0.5) * (deltaT / STEPS))*UnitTime_in_years/Hubble_h/1.e9,
+      // printf("sna=%d step=%d step time=%f time low=%f\n",
+      //		snap,step,(previoustime - (step + 0.5) * (deltaT /
+      //STEPS))*UnitTime_in_years/Hubble_h/1.e9,
       //		(time)*UnitTime_in_years/Hubble_h/1.e9);
-      //Add one extra bin
-      if(snap==0 && step==0) {
-      	sfh_t[0]=time;
-      	sfh_Nbins[0]=1;
-      }
-      else {
-      	ibin+=1;
-      	if(ibin==SFH_NBIN)
-      		terminate("sfh_update_bins: too many bins required\n");
-      	ibin_max=max(ibin_max,ibin);
-      	sfh_Nbins[ibin]=1;
-      	sfh_t[ibin]=time;
+      // Add one extra bin
+      if (snap == 0 && step == 0) {
+        sfh_t[0] = time;
+        sfh_Nbins[0] = 1;
+      } else {
+        ibin += 1;
+        if (ibin == SFH_NBIN)
+          terminate("sfh_update_bins: too many bins required\n");
+        ibin_max = max(ibin_max, ibin);
+        sfh_Nbins[ibin] = 1;
+        sfh_t[ibin] = time;
       }
 
       /* Now merge bins where we have SFH_NMERGE bins of the same size.
        * Need to do this iteratively. */
-      flag_merged_bins=1;
-      while(flag_merged_bins)
-	{
-	  flag_merged_bins=0;
-	  dt_merge=sfh_Nbins[0];
-	  i=0;
-	  // Will have checked all bins once dt_merge drops to zero
-	  while(!flag_merged_bins && dt_merge>0)
-	    {
-	      // Count number of bins of this size
-	      n_merge=0;
-	      // The i=i below is to suppress a warning message
-	      for(i=i;sfh_Nbins[i]==dt_merge;i++) n_merge+=1;
-	      /* If fewer than SFH_NMERGE bins then do nothing
-	       * (SFH_NMERGE+1 bins if dt_merge=1)
-	       * else exit loop and flag for merging */
-	      if (n_merge<SFH_NMERGE || (n_merge==SFH_NMERGE && dt_merge==1))
-		{
-		  /* In new version of the code, treat smallest bins just like any others */
-		  //if (n_merge<SFH_NMERGE) {
-		  dt_merge/=2;
-		  n_merge=0;
-		}
-	      else {
-		  flag_merged_bins=1;
-		  i=i-n_merge;
-      		}
-	    }
-	
-	  /* At this point, if flag_merged_bins is set then
-	   * we have to merge SFH_NMERGE bins into SFH_NMERGE-1. */
-	  if(flag_merged_bins) {
-	      /* Merge bins i and i+1 */
-	      sfh_Nbins[i]*=2;
-	      sfh_t[i]=sfh_t[i+1];
-	      /* Relabel all the other bins */
-	      for(i=i+1;i<ibin;i++) {
-		  sfh_Nbins[i]=sfh_Nbins[i+1];
-		  sfh_t[i]=sfh_t[i+1];
-	      }
-	      sfh_Nbins[i]=0;
-	      sfh_t[i]=0.;
-	      ibin=i-1;
-	  }
-	} // End loop over bin merging
+      flag_merged_bins = 1;
+      while (flag_merged_bins) {
+        flag_merged_bins = 0;
+        dt_merge = sfh_Nbins[0];
+        i = 0;
+        // Will have checked all bins once dt_merge drops to zero
+        while (!flag_merged_bins && dt_merge > 0) {
+          // Count number of bins of this size
+          n_merge = 0;
+          // The i=i below is to suppress a warning message
+          for (i = i; sfh_Nbins[i] == dt_merge; i++)
+            n_merge += 1;
+          /* If fewer than SFH_NMERGE bins then do nothing
+           * (SFH_NMERGE+1 bins if dt_merge=1)
+           * else exit loop and flag for merging */
+          if (n_merge < SFH_NMERGE ||
+              (n_merge == SFH_NMERGE && dt_merge == 1)) {
+            /* In new version of the code, treat smallest bins just like any
+             * others */
+            // if (n_merge<SFH_NMERGE) {
+            dt_merge /= 2;
+            n_merge = 0;
+          } else {
+            flag_merged_bins = 1;
+            i = i - n_merge;
+          }
+        }
 
-      sfh_ibin=ibin;
+        /* At this point, if flag_merged_bins is set then
+         * we have to merge SFH_NMERGE bins into SFH_NMERGE-1. */
+        if (flag_merged_bins) {
+          /* Merge bins i and i+1 */
+          sfh_Nbins[i] *= 2;
+          sfh_t[i] = sfh_t[i + 1];
+          /* Relabel all the other bins */
+          for (i = i + 1; i < ibin; i++) {
+            sfh_Nbins[i] = sfh_Nbins[i + 1];
+            sfh_t[i] = sfh_t[i + 1];
+          }
+          sfh_Nbins[i] = 0;
+          sfh_t[i] = 0.;
+          ibin = i - 1;
+        }
+      } // End loop over bin merging
 
-      //if(step==19)
-      //printf("snap=%d\n",snap+1);
-      for(j=0;j<=sfh_ibin;j++)
-      {
-      	SFH_t[snap][step][j]=sfh_t[j]; //Time to present at the low-z edge of the bin (code units)
-      	SFH_Nbins[snap][step][j]=sfh_Nbins[j];//Number of bins merged in each bin (only useful for the merging algorithm)
-      	if(j==0)
-      	  SFH_dt[snap][step][j]=NumToTime(0)-sfh_t[j];//Time width of the bin (code units)
-      	else
-      	  SFH_dt[snap][step][j]=sfh_t[j-1]-sfh_t[j];//Time width of the bin (code units)
-      }	
-      SFH_ibin[snap][step]=sfh_ibin; //Last active bin
+      sfh_ibin = ibin;
 
-    }//end loop on steps
+      // if(step==19)
+      // printf("snap=%d\n",snap+1);
+      for (j = 0; j <= sfh_ibin; j++) {
+        //SFH_t[snap][step][j] = sfh_t[j]; // Time to present at the low-z edge of
+        SFH_t.at(snap);
+        SFH_t.at(snap).at(step).at(j) = sfh_t[j];
+                                         // the bin (code units)
+        SFH_Nbins[snap][step][j] =
+            sfh_Nbins[j]; // Number of bins merged in each bin (only useful for
+                          // the merging algorithm)
+        if (j == 0)
+          SFH_dt[snap][step][j] =
+              NumToTime(0) - sfh_t[j]; // Time width of the bin (code units)
+        else
+          SFH_dt[snap][step][j] =
+              sfh_t[j - 1] - sfh_t[j]; // Time width of the bin (code units)
 
-  }//end loop on snaps
+        //printf("b %d %d %d %s\n", snap, step, j, SpecPhotDir);
+      }
+      SFH_ibin[snap][step] = sfh_ibin; // Last active bin
 
-  //exit(0);
+    } // end loop on steps
+
+  } // end loop on snaps
+
+  // exit(0);
 #ifdef PARALLEL
-  if(ThisTask==0)
+  if (ThisTask == 0)
 #endif
-  printf("Max number of SFH bins used = %d\n",ibin_max+1);
-
+    printf("Max number of SFH bins used = %d\n", ibin_max + 1);
 }
 
-void sfh_update_bins(int p, int snap, int step, double time)
-{
+void sfh_update_bins(int p, int snap, int step, double time) {
   /* Adds new bins as required.
    * Then merges bins whenever you have three or more of the same size.
    * Assumes that time counts from zero at the big bang. */
-  int i, j; // loop index
-  int SFH_ibin; //desired ibin (i.e. bin in question in for loop below)
+  int i, j;     // loop index
+  int SFH_ibin; // desired ibin (i.e. bin in question in for loop below)
 
-  SFH_ibin=0;
+  SFH_ibin = 0;
 
-  Gal[p].sfh_age=time;
+  Gal[p].sfh_age = time;
 
-  //t=time/SFH_TIME_INTERVAL;
-  //ibin=Gal[p].sfh_ibin;
-  for(i=0;i<SFH_NBIN;i++)
-    if(SFH_Nbins[snap][step][i]>0) //i.e. If bin is active...
-      SFH_ibin=i; //Assign with 'bin in question'
+  // t=time/SFH_TIME_INTERVAL;
+  // ibin=Gal[p].sfh_ibin;
+  for (i = 0; i < SFH_NBIN; i++)
+    if (SFH_Nbins[snap][step][i] > 0) // i.e. If bin is active...
+      SFH_ibin = i;                   // Assign with 'bin in question'
 
-  if (Gal[p].sfh_ibin == 0) //i.e. If highest active bin is bin 0...
+  if (Gal[p].sfh_ibin == 0) // i.e. If highest active bin is bin 0...
   {
-    for(i=0;i<=SFH_ibin;i++) {
-      Gal[p].sfh_t[i]=SFH_t[snap][step][i];
-      Gal[p].sfh_Nbins[i]=SFH_Nbins[snap][step][i];
+    for (i = 0; i <= SFH_ibin; i++) {
+      Gal[p].sfh_t[i] = SFH_t[snap][step][i];
+      Gal[p].sfh_Nbins[i] = SFH_Nbins[snap][step][i];
     }
-    Gal[p].sfh_ibin=SFH_ibin;
-  }
-  else //i.e. If highest active bin is > bin 0...
+    Gal[p].sfh_ibin = SFH_ibin;
+  } else // i.e. If highest active bin is > bin 0...
   {
-    i=0;
-    
-    while(i<=SFH_ibin) //Up to 'bin in question'...
+    i = 0;
+
+    while (i <= SFH_ibin) // Up to 'bin in question'...
     {
-      if(i<=Gal[p].sfh_ibin) //...until highest active bin is reached...
+      if (i <= Gal[p].sfh_ibin) //...until highest active bin is reached...
       {
-	if(Gal[p].sfh_Nbins[i]!= SFH_Nbins[snap][step][i]) //...and until bin has grown to required size.
-	{
-	  // Merge bins i and i+1
-	  Gal[p].sfh_Nbins[i]+=Gal[p].sfh_Nbins[i+1];
-	  Gal[p].sfh_t[i]=Gal[p].sfh_t[i+1];
-	  Gal[p].sfh_DiskMass[i]+=Gal[p].sfh_DiskMass[i+1];
-	  Gal[p].sfh_BulgeMass[i]+=Gal[p].sfh_BulgeMass[i+1];
-	  Gal[p].sfh_ICM[i]+=Gal[p].sfh_ICM[i+1];
-	  Gal[p].sfh_MetalsDiskMass[i]=metals_add(Gal[p].sfh_MetalsDiskMass[i],Gal[p].sfh_MetalsDiskMass[i+1],1.);
-	  Gal[p].sfh_MetalsBulgeMass[i]=metals_add(Gal[p].sfh_MetalsBulgeMass[i],Gal[p].sfh_MetalsBulgeMass[i+1],1.);
-	  Gal[p].sfh_MetalsICM[i]= metals_add(Gal[p].sfh_MetalsICM[i],Gal[p].sfh_MetalsICM[i+1],1.);
+        if (Gal[p].sfh_Nbins[i] !=
+            SFH_Nbins[snap][step]
+                     [i]) //...and until bin has grown to required size.
+        {
+          // Merge bins i and i+1
+          Gal[p].sfh_Nbins[i] += Gal[p].sfh_Nbins[i + 1];
+          Gal[p].sfh_t[i] = Gal[p].sfh_t[i + 1];
+          Gal[p].sfh_DiskMass[i] += Gal[p].sfh_DiskMass[i + 1];
+          Gal[p].sfh_BulgeMass[i] += Gal[p].sfh_BulgeMass[i + 1];
+          Gal[p].sfh_ICM[i] += Gal[p].sfh_ICM[i + 1];
+          Gal[p].sfh_MetalsDiskMass[i] =
+              metals_add(Gal[p].sfh_MetalsDiskMass[i],
+                         Gal[p].sfh_MetalsDiskMass[i + 1], 1.);
+          Gal[p].sfh_MetalsBulgeMass[i] =
+              metals_add(Gal[p].sfh_MetalsBulgeMass[i],
+                         Gal[p].sfh_MetalsBulgeMass[i + 1], 1.);
+          Gal[p].sfh_MetalsICM[i] = metals_add(Gal[p].sfh_MetalsICM[i],
+                                               Gal[p].sfh_MetalsICM[i + 1], 1.);
 #ifdef INDIVIDUAL_ELEMENTS
-	  Gal[p].sfh_ElementsDiskMass[i] = elements_add(Gal[p].sfh_ElementsDiskMass[i],Gal[p].sfh_ElementsDiskMass[i+1],1.);
-	  Gal[p].sfh_ElementsBulgeMass[i] = elements_add(Gal[p].sfh_ElementsBulgeMass[i],Gal[p].sfh_ElementsBulgeMass[i+1],1.);
-	  Gal[p].sfh_ElementsICM[i] = elements_add(Gal[p].sfh_ElementsICM[i],Gal[p].sfh_ElementsICM[i+1],1.);
+          Gal[p].sfh_ElementsDiskMass[i] =
+              elements_add(Gal[p].sfh_ElementsDiskMass[i],
+                           Gal[p].sfh_ElementsDiskMass[i + 1], 1.);
+          Gal[p].sfh_ElementsBulgeMass[i] =
+              elements_add(Gal[p].sfh_ElementsBulgeMass[i],
+                           Gal[p].sfh_ElementsBulgeMass[i + 1], 1.);
+          Gal[p].sfh_ElementsICM[i] = elements_add(
+              Gal[p].sfh_ElementsICM[i], Gal[p].sfh_ElementsICM[i + 1], 1.);
 #endif
 #ifdef TRACK_BURST
-	  Gal[p].sfh_BurstMass[i]+=Gal[p].sfh_BurstMass[i+1];
+          Gal[p].sfh_BurstMass[i] += Gal[p].sfh_BurstMass[i + 1];
 #endif
-	  // Relabel all the other bins
-	  for(j=i+1;j<Gal[p].sfh_ibin;j++) {
-	    Gal[p].sfh_Nbins[j]=Gal[p].sfh_Nbins[j+1];
-	    Gal[p].sfh_t[j]=Gal[p].sfh_t[j+1];
-	    Gal[p].sfh_DiskMass[j]=Gal[p].sfh_DiskMass[j+1];
-	    Gal[p].sfh_BulgeMass[j]=Gal[p].sfh_BulgeMass[j+1];
-	    Gal[p].sfh_ICM[j]=Gal[p].sfh_ICM[j+1];
-	    Gal[p].sfh_MetalsDiskMass[j]=Gal[p].sfh_MetalsDiskMass[j+1];
-	    Gal[p].sfh_MetalsBulgeMass[j]=Gal[p].sfh_MetalsBulgeMass[j+1];
-	    Gal[p].sfh_MetalsICM[j]=Gal[p].sfh_MetalsICM[j+1];
+          // Relabel all the other bins
+          for (j = i + 1; j < Gal[p].sfh_ibin; j++) {
+            Gal[p].sfh_Nbins[j] = Gal[p].sfh_Nbins[j + 1];
+            Gal[p].sfh_t[j] = Gal[p].sfh_t[j + 1];
+            Gal[p].sfh_DiskMass[j] = Gal[p].sfh_DiskMass[j + 1];
+            Gal[p].sfh_BulgeMass[j] = Gal[p].sfh_BulgeMass[j + 1];
+            Gal[p].sfh_ICM[j] = Gal[p].sfh_ICM[j + 1];
+            Gal[p].sfh_MetalsDiskMass[j] = Gal[p].sfh_MetalsDiskMass[j + 1];
+            Gal[p].sfh_MetalsBulgeMass[j] = Gal[p].sfh_MetalsBulgeMass[j + 1];
+            Gal[p].sfh_MetalsICM[j] = Gal[p].sfh_MetalsICM[j + 1];
 #ifdef INDIVIDUAL_ELEMENTS
-	    Gal[p].sfh_ElementsDiskMass[j]=Gal[p].sfh_ElementsDiskMass[j+1];
-	    Gal[p].sfh_ElementsBulgeMass[j]=Gal[p].sfh_ElementsBulgeMass[j+1];
-	    Gal[p].sfh_ElementsICM[j]=Gal[p].sfh_ElementsICM[j+1];
+            Gal[p].sfh_ElementsDiskMass[j] = Gal[p].sfh_ElementsDiskMass[j + 1];
+            Gal[p].sfh_ElementsBulgeMass[j] =
+                Gal[p].sfh_ElementsBulgeMass[j + 1];
+            Gal[p].sfh_ElementsICM[j] = Gal[p].sfh_ElementsICM[j + 1];
 #endif
 #ifdef TRACK_BURST
-	    Gal[p].sfh_BurstMass[j]=Gal[p].sfh_BurstMass[j+1];
+            Gal[p].sfh_BurstMass[j] = Gal[p].sfh_BurstMass[j + 1];
 #endif
-	  }
+          }
 
-	  //set last bin to zero
-	  Gal[p].sfh_flag[j]=0;
-	  Gal[p].sfh_Nbins[j]=0;
-	  Gal[p].sfh_t[j]=0.;
-	  Gal[p].sfh_DiskMass[j]=0.;
-	  Gal[p].sfh_BulgeMass[j]=0.;
-	  Gal[p].sfh_ICM[j]=0.;
-	  Gal[p].sfh_MetalsDiskMass[j]=metals_init();
-	  Gal[p].sfh_MetalsBulgeMass[j]=metals_init();
-	  Gal[p].sfh_MetalsICM[j]=metals_init();
+          // set last bin to zero
+          Gal[p].sfh_flag[j] = 0;
+          Gal[p].sfh_Nbins[j] = 0;
+          Gal[p].sfh_t[j] = 0.;
+          Gal[p].sfh_DiskMass[j] = 0.;
+          Gal[p].sfh_BulgeMass[j] = 0.;
+          Gal[p].sfh_ICM[j] = 0.;
+          Gal[p].sfh_MetalsDiskMass[j] = metals_init();
+          Gal[p].sfh_MetalsBulgeMass[j] = metals_init();
+          Gal[p].sfh_MetalsICM[j] = metals_init();
 #ifdef INDIVIDUAL_ELEMENTS
-	  Gal[p].sfh_ElementsDiskMass[j]=elements_init();
-	  Gal[p].sfh_ElementsBulgeMass[j]=elements_init();
-	  Gal[p].sfh_ElementsICM[j]=elements_init();
+          Gal[p].sfh_ElementsDiskMass[j] = elements_init();
+          Gal[p].sfh_ElementsBulgeMass[j] = elements_init();
+          Gal[p].sfh_ElementsICM[j] = elements_init();
 #endif
 #ifdef TRACK_BURST
-	  Gal[p].sfh_BurstMass[j]=0.;
+          Gal[p].sfh_BurstMass[j] = 0.;
 #endif
-	  Gal[p].sfh_ibin=j-1;
-	  
-	  /* If there are no more time bins in the galaxy to merge and
-	   * the last bin still doesn't have the required size
-	   * re-size it according to the reference structure SFH */
-	  if(Gal[p].sfh_Nbins[i+1]==0) {
-	    Gal[p].sfh_Nbins[i]=SFH_Nbins[snap][step][i];
-	    Gal[p].sfh_t[i]=SFH_t[snap][step][i];
-	    i+=1;
-	  }
-	}
-	else
-	  i+=1;
-      }
-      else {
-	//no more bins available in the galaxy, fill the rest times from SFH array
-	for(j=i;j<=SFH_ibin;j++) {
-	  Gal[p].sfh_Nbins[j]=SFH_Nbins[snap][step][j];
-	  Gal[p].sfh_t[j]=SFH_t[snap][step][j];
-	  Gal[p].sfh_DiskMass[j]=0.;
-	  Gal[p].sfh_BulgeMass[j]=0.;
-	  Gal[p].sfh_ICM[j]=0.;
-	  Gal[p].sfh_MetalsDiskMass[j]=metals_init();
-	  Gal[p].sfh_MetalsBulgeMass[j]=metals_init();
-	  Gal[p].sfh_MetalsICM[j]=metals_init();
-#ifdef INDIVIDUAL_ELEMENTS
-	  Gal[p].sfh_ElementsDiskMass[j]=elements_init();
-	  Gal[p].sfh_ElementsBulgeMass[j]=elements_init();
-	  Gal[p].sfh_ElementsICM[j]=elements_init();
-#endif
-#ifdef TRACK_BURST
-	  Gal[p].sfh_BurstMass[j]=0.;
-#endif
-	  Gal[p].sfh_ibin=j;
-	}
-	i=j;
-      }
-    }//end while
-  }//end else
+          Gal[p].sfh_ibin = j - 1;
 
-  for(i=0;i<SFH_NBIN;i++) {
-    if(i==0)
-      Gal[p].sfh_dt[i]=NumToTime(0)-Gal[p].sfh_t[i];
+          /* If there are no more time bins in the galaxy to merge and
+           * the last bin still doesn't have the required size
+           * re-size it according to the reference structure SFH */
+          if (Gal[p].sfh_Nbins[i + 1] == 0) {
+            Gal[p].sfh_Nbins[i] = SFH_Nbins[snap][step][i];
+            Gal[p].sfh_t[i] = SFH_t[snap][step][i];
+            i += 1;
+          }
+        } else
+          i += 1;
+      } else {
+        // no more bins available in the galaxy, fill the rest times from SFH
+        // array
+        for (j = i; j <= SFH_ibin; j++) {
+          Gal[p].sfh_Nbins[j] = SFH_Nbins[snap][step][j];
+          Gal[p].sfh_t[j] = SFH_t[snap][step][j];
+          Gal[p].sfh_DiskMass[j] = 0.;
+          Gal[p].sfh_BulgeMass[j] = 0.;
+          Gal[p].sfh_ICM[j] = 0.;
+          Gal[p].sfh_MetalsDiskMass[j] = metals_init();
+          Gal[p].sfh_MetalsBulgeMass[j] = metals_init();
+          Gal[p].sfh_MetalsICM[j] = metals_init();
+#ifdef INDIVIDUAL_ELEMENTS
+          Gal[p].sfh_ElementsDiskMass[j] = elements_init();
+          Gal[p].sfh_ElementsBulgeMass[j] = elements_init();
+          Gal[p].sfh_ElementsICM[j] = elements_init();
+#endif
+#ifdef TRACK_BURST
+          Gal[p].sfh_BurstMass[j] = 0.;
+#endif
+          Gal[p].sfh_ibin = j;
+        }
+        i = j;
+      }
+    } // end while
+  }   // end else
+
+  for (i = 0; i < SFH_NBIN; i++) {
+    if (i == 0)
+      Gal[p].sfh_dt[i] = NumToTime(0) - Gal[p].sfh_t[i];
     else
-      Gal[p].sfh_dt[i]=Gal[p].sfh_t[i-1]-Gal[p].sfh_t[i];
+      Gal[p].sfh_dt[i] = Gal[p].sfh_t[i - 1] - Gal[p].sfh_t[i];
   }
 }
-

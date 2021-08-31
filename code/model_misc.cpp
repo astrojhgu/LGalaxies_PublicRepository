@@ -1613,8 +1613,8 @@ void polint(double xa[], double ya[], int n, double x, double *y, double *dy)
   double ww;
 
   dif=fabs(x-xa[1]);
-  c=vector(1,n);
-  d=vector(1,n);
+  c=::vector(1,n);
+  d=::vector(1,n);
   for (i=1;i<=n;i++) {
       if ( (dift=fabs(x-xa[i])) < dif) {
 	  ns=i;

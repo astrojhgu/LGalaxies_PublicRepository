@@ -146,7 +146,9 @@ void init(void)
 
 //CREATE ARRAYS OF SFH TIME STRUCTURE:
 #ifdef  STAR_FORMATION_HISTORY
+printf("a %s\n", SpecPhotDir);
   create_sfh_bins();
+  printf("a %s\n", SpecPhotDir);
 #endif
 
 #ifndef MR_PLUS_MRII //If this option (to run with MCMC) is on, the tables are read later

@@ -17,7 +17,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
-
+#include <cassert>
 #include "allvars.h"
 #include "proto.h"
 

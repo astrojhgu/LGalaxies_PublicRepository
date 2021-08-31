@@ -23,6 +23,7 @@
 #include <cstring>
 #include <cmath>
 #include <ctime>
+#include <cassert>
 
 using namespace std;
 
@@ -58,6 +59,8 @@ using namespace std;
 #ifdef PHOTTABLES_PRECOMPUTED
 void setup_LumTables_precomputed(const char SimName[])
 {
+  //printf("a %s\n", SpecPhotDir);
+  //assert(0);
   FILE *fa, *fb;
   int MetalLoop, AgeLoop, band, snap;
   char buf[1900], FilterName[100], dummy[100], SSP[1000];
