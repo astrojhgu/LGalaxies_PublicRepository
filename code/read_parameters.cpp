@@ -26,10 +26,10 @@
 #include "mcmc_proto.h"
 #endif
 
-constexpr auto DOUBLE =1;
-constexpr auto STRING =2;
-constexpr auto INT =3;
-constexpr auto MAXTAGS =300;
+constexpr auto DOUBLE = 1;
+constexpr auto STRING = 2;
+constexpr auto INT = 3;
+constexpr auto MAXTAGS = 300;
 
 /**@file read_parameters.c reads all the parameters in input.par into global variables
  *       that can be used by the code. */
@@ -214,10 +214,10 @@ void read_parameter_file(char *fname)
   addr[nt] = JobSubmitPipe;
   id[nt++] = STRING;
 #endif
- 
 
 
-   //Variables for the Scaling & Cosmological Parameters
+
+  //Variables for the Scaling & Cosmological Parameters
 
   strcpy(tag[nt], "ScalePos");
   addr[nt] = &ScalePos;
@@ -259,7 +259,7 @@ void read_parameter_file(char *fname)
   addr[nt] = &Hubble_h_OriginalCosm;
   id[nt++] = DOUBLE;
 
-#ifdef MR_PLUS_MRII  //OPTION for MCMC
+#ifdef MR_PLUS_MRII             //OPTION for MCMC
   //MR
   strcpy(tag[nt], "FileWithZList_MR");
   addr[nt] = FileWithZList_MR;
@@ -336,7 +336,7 @@ void read_parameter_file(char *fname)
 #endif
 
 
-#ifdef MR_PLUS_MRII  //OPTION for MCMC
+#ifdef MR_PLUS_MRII             //OPTION for MCMC
   strcpy(tag[nt], "LastDarkMatterSnapShot_MR");
   addr[nt] = &LastDarkMatterSnapShot_MR;
   id[nt++] = INT;
@@ -557,7 +557,7 @@ void read_parameter_file(char *fname)
                   *((double *) addr[j]) = atof(buf2);
                   break;
                 case STRING:
-                  strcpy((char*)addr[j], buf2);
+                  strcpy((char *) addr[j], buf2);
                   break;
                 case INT:
                   *((int *) addr[j]) = atoi(buf2);

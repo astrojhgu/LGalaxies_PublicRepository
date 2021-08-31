@@ -33,11 +33,11 @@
 
 double time_to_present(double z)
 {
-constexpr auto WORKSIZE=1000;
+  constexpr auto WORKSIZE = 1000;
   gsl_function F;
   gsl_integration_workspace *workspace;
   double time, result, abserr;
- 
+
   workspace = gsl_integration_workspace_alloc(WORKSIZE);
   F.function = &integrand_time_to_present;
 
@@ -50,8 +50,8 @@ constexpr auto WORKSIZE=1000;
 
   gsl_integration_workspace_free(workspace);
 
-  
-  
+
+
   return time;
 }
 

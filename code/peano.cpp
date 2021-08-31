@@ -100,16 +100,16 @@ int peano_hilbert_key(int x, int y, int z, int bits)
       sense *= sense_table[quad];
 
       while(rotx > 0)
-	{
-	  rotation = rotxmap_table[rotation];
-	  rotx--;
-	}
+        {
+          rotation = rotxmap_table[rotation];
+          rotx--;
+        }
 
       while(roty > 0)
-	{
-	  rotation = rotymap_table[rotation];
-	  roty--;
-	}
+        {
+          rotation = rotymap_table[rotation];
+          roty--;
+        }
     }
 
   return key;

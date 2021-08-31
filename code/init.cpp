@@ -109,7 +109,7 @@ void init(void)
 
   random_generator = gsl_rng_alloc(gsl_rng_ranlxd1);
 
-  gsl_rng_set(random_generator, 42);	/* start-up seed */
+  gsl_rng_set(random_generator, 42);    /* start-up seed */
 
   set_units();
 #ifdef GALAXYTREE
@@ -126,7 +126,7 @@ void init(void)
   read_zlist_original_cosm();
 
   //reads in the desired output snapshots
-   read_output_snaps();
+  read_output_snaps();
 
 
 #ifdef SPECIFYFILENR
@@ -146,12 +146,12 @@ void init(void)
 
 //CREATE ARRAYS OF SFH TIME STRUCTURE:
 #ifdef  STAR_FORMATION_HISTORY
-printf("a %s\n", SpecPhotDir);
+  printf("a %s\n", SpecPhotDir);
   create_sfh_bins();
   printf("a %s\n", SpecPhotDir);
 #endif
 
-#ifndef MR_PLUS_MRII //If this option (to run with MCMC) is on, the tables are read later
+#ifndef MR_PLUS_MRII            //If this option (to run with MCMC) is on, the tables are read later
 #ifdef COMPUTE_SPECPHOT_PROPERTIES
 //read in photometric tables
 #ifdef PHOTTABLES_PRECOMPUTED
@@ -183,17 +183,18 @@ printf("a %s\n", SpecPhotDir);
  *       Creates a table with redshift ZZ[] and ages Age[].*/
 void read_zlist(void)
 {
-	int i;
+  int i;
   FILE *fd;
   char fname[1000];
   char sbuf[1500];
+
   //double dumb2, dumb;
 
   sprintf(fname, "%s", FileWithZList);
 
   if(!(fd = fopen(fname, "r")))
     {
-      sprintf(sbuf,"can't read output list in file '%s'\n", fname);
+      sprintf(sbuf, "can't read output list in file '%s'\n", fname);
       terminate(sbuf);
     }
 
@@ -201,24 +202,24 @@ void read_zlist(void)
   do
     {
       //if(fscanf(fd, "%d %lg %lf\n", &dumb, &ZZ[Zlistlen], &dumb2) == 3)
-  	  if(fscanf(fd, "%lg\n", &AA[Zlistlen]) == 1)
-      	Zlistlen++;
+      if(fscanf(fd, "%lg\n", &AA[Zlistlen]) == 1)
+        Zlistlen++;
       else
-      	break;
+        break;
 
     }
-  while(Zlistlen < LastDarkMatterSnapShot+1);
+  while(Zlistlen < LastDarkMatterSnapShot + 1);
 
   fclose(fd);
 
   for(i = 0; i < Zlistlen; i++)
-     {
-  	//convert AA[] into redshift - ZZ[]
-       ZZ[i] = 1 / AA[i] - 1;
-       //table with time in internal units (Mpc/Km/s/h)
-       Age[i] = time_to_present(ZZ[i]);
+    {
+      //convert AA[] into redshift - ZZ[]
+      ZZ[i] = 1 / AA[i] - 1;
+      //table with time in internal units (Mpc/Km/s/h)
+      Age[i] = time_to_present(ZZ[i]);
 
-     }
+    }
 
 #ifndef MCMC
 #ifdef PARALLEL
@@ -242,35 +243,36 @@ void read_zlist_new(void)
   sprintf(fname, "%s", FileWithZList);
   if(!(fd = fopen(fname, "r")))
     {
-  	char sbuf[2000];
-  	sprintf(sbuf, "can't open file `%s'\n", fname);
-  	terminate(sbuf);
+      char sbuf[2000];
+
+      sprintf(sbuf, "can't open file `%s'\n", fname);
+      terminate(sbuf);
     }
 
   Zlistlen = 0;
   do
     {
       if(fscanf(fd, "%d %lg %lg", &dummy_snap, &ZZ[Zlistlen], &dummy_a) == 3)
-    	  Zlistlen++;
+        Zlistlen++;
       else
-	break;
+        break;
 
     }
-  while(Zlistlen < LastDarkMatterSnapShot+1);
+  while(Zlistlen < LastDarkMatterSnapShot + 1);
   fclose(fd);
 
   for(i = 0; i < Zlistlen; i++)
-  {
-  	//convert redshift - ZZ[] into AA[]
-  	AA[i] = 1/(ZZ[i] + 1);
-  	//printf("z[%d]=%f\n",i,ZZ[i]);
-  	//table with time in internal units (Mpc/Km/s/h)
-  	if(ZZ[i]>=0.0)
-  		Age[i] = time_to_present(ZZ[i]);
-  	else
-  		Age[i] = 0.0;
-  		//break;
-  }
+    {
+      //convert redshift - ZZ[] into AA[]
+      AA[i] = 1 / (ZZ[i] + 1);
+      //printf("z[%d]=%f\n",i,ZZ[i]);
+      //table with time in internal units (Mpc/Km/s/h)
+      if(ZZ[i] >= 0.0)
+        Age[i] = time_to_present(ZZ[i]);
+      else
+        Age[i] = 0.0;
+      //break;
+    }
 
 
 #ifndef MCMC
@@ -299,16 +301,17 @@ void read_zlist_original_cosm(void)
   do
     {
       if(fscanf(fd, " %lg ", &AA_OriginalCosm[Zlistlen]) == 1)
-        {Zlistlen++;
-	}
+        {
+          Zlistlen++;
+        }
       else
         break;
     }
-  while(Zlistlen < LastDarkMatterSnapShot+1);
+  while(Zlistlen < LastDarkMatterSnapShot + 1);
 
   fclose(fd);
 
-#ifndef MR_PLUS_MRII //option for MCMC
+#ifndef MR_PLUS_MRII            //option for MCMC
 #ifdef PARALLEL
   if(ThisTask == 0)
     printf("found %d defined times in zlist.\n", Zlistlen);
@@ -329,13 +332,14 @@ void read_output_snaps(void)
   char buf[1000];
   FILE *fd;
 
-  LastSnapShotNr=0;
+  LastSnapShotNr = 0;
 
   sprintf(buf, "%s", FileWithOutputRedshifts);
 
   if(!(fd = fopen(buf, "r")))
     {
       char sbuf[2000];
+
       sprintf(sbuf, "file `%s' not found.\n", buf);
       terminate(sbuf);
     }
@@ -344,42 +348,43 @@ void read_output_snaps(void)
     {
       if(fscanf(fd, " %f ", &ListOutputRedshifts[i]) != 1)
         {
-    	  char sbuf[2000];
-    	  sprintf(sbuf, "I/O error in file '%s'\n", buf);
-    	  terminate(sbuf);
+          char sbuf[2000];
+
+          sprintf(sbuf, "I/O error in file '%s'\n", buf);
+          terminate(sbuf);
         }
 
       //find the snapshot corresponding to the desired output redshift in ListOutputRedshifts[]
-      for(j = 0; j < LastDarkMatterSnapShot+1; j++)
-      	if(ListOutputRedshifts[i]>=ZZ[j])
-      	{
-      		if((ZZ[j-1]-ListOutputRedshifts[i])<(ListOutputRedshifts[i]-ZZ[j]) || ZZ[j]< 0.0)
-      			ListOutputSnaps[i]=j-1;
-    		  else
-    		    ListOutputSnaps[i]=j;
-    		  break;
-      	}
+      for(j = 0; j < LastDarkMatterSnapShot + 1; j++)
+        if(ListOutputRedshifts[i] >= ZZ[j])
+          {
+            if((ZZ[j - 1] - ListOutputRedshifts[i]) < (ListOutputRedshifts[i] - ZZ[j]) || ZZ[j] < 0.0)
+              ListOutputSnaps[i] = j - 1;
+            else
+              ListOutputSnaps[i] = j;
+            break;
+          }
 
 
 #ifdef MCMC
-      		if (ThisTask == 0 && CurrentMCMCStep==1)
+      if(ThisTask == 0 && CurrentMCMCStep == 1)
 #else
-      		if (ThisTask == 0)
+      if(ThisTask == 0)
 #endif
-      			printf("requested z=%0.2f, available snap[%d] z=%f & snap[%d] z=%f, use snap[%d]\n",
-      					ListOutputRedshifts[i], j-1, ZZ[j-1], j, ZZ[j], ListOutputSnaps[i]);
+        printf("requested z=%0.2f, available snap[%d] z=%f & snap[%d] z=%f, use snap[%d]\n",
+               ListOutputRedshifts[i], j - 1, ZZ[j - 1], j, ZZ[j], ListOutputSnaps[i]);
 
 
       //define the LastSnapShotNr as the highest snapshot need to be computed
-      if(LastSnapShotNr<ListOutputSnaps[i])
-    	LastSnapShotNr=ListOutputSnaps[i];
+      if(LastSnapShotNr < ListOutputSnaps[i])
+        LastSnapShotNr = ListOutputSnaps[i];
     }
   fclose(fd);
 
 #else
   for(i = 0; i < NOUT; i++)
     ListOutputSnaps[i] = i;
-  LastSnapShotNr=LastDarkMatterSnapShot;
+  LastSnapShotNr = LastDarkMatterSnapShot;
 #endif
 }
 
@@ -437,37 +442,37 @@ void set_units(void)
 {
 
 
-	// SEC_PER_MEGAYEAR   3.155e13
-	// SEC_PER_YEAR       3.155e7
+  // SEC_PER_MEGAYEAR   3.155e13
+  // SEC_PER_YEAR       3.155e7
 
   //UNITLENGTH_IN_CM & UNITVELOCITY_IN_CM_PER_S; defined at allvars.h
   UnitTime_in_s = UNITLENGTH_IN_CM / UNITVELOCITY_IN_CM_PER_S;
   UnitTime_in_Megayears = UnitTime_in_s / SEC_PER_MEGAYEAR;
-  UnitTime_in_years = 1e6*UnitTime_in_Megayears;
+  UnitTime_in_years = 1e6 * UnitTime_in_Megayears;
 
 
   //gravity in internal units
-  G = GRAVITY / pow3(UNITLENGTH_IN_CM) * UNITMASS_IN_G * pow2(UnitTime_in_s);//43.00708
+  G = GRAVITY / pow3(UNITLENGTH_IN_CM) * UNITMASS_IN_G * pow2(UnitTime_in_s);   //43.00708
 
   //converts g.cm^-3 into internal units (1e10Msun Mpc^-3)
-  UnitDensity_in_cgs = UNITMASS_IN_G / pow3(UNITLENGTH_IN_CM);//6.769898e-31
+  UnitDensity_in_cgs = UNITMASS_IN_G / pow3(UNITLENGTH_IN_CM);  //6.769898e-31
 
   //converts g.cm^-1s^-2 into internal units (10^10Msun.Mpc^-1(Mpc/Km/s)^-2) \f$
-  UnitPressure_in_cgs = UNITMASS_IN_G / UNITLENGTH_IN_CM / pow2(UnitTime_in_s);//6.769898e-21
+  UnitPressure_in_cgs = UNITMASS_IN_G / UNITLENGTH_IN_CM / pow2(UnitTime_in_s); //6.769898e-21
 
   //converts g.cm^-1.s^-3 into internal units (10^10Msun.Mpc^-1(Mpc/Km/s)^-3)
-  UnitCoolingRate_in_cgs = UnitPressure_in_cgs / UnitTime_in_s;//2.193973e-40
+  UnitCoolingRate_in_cgs = UnitPressure_in_cgs / UnitTime_in_s; //2.193973e-40
 
   //converts g.cm^2.s^-2 into internal units (10^10Msun.Mpc^2(Mpc/Km/s)^-2)
-  UnitEnergy_in_cgs = UNITMASS_IN_G * pow2(UNITLENGTH_IN_CM) / pow2(UnitTime_in_s);//1.989000e+53
+  UnitEnergy_in_cgs = UNITMASS_IN_G * pow2(UNITLENGTH_IN_CM) / pow2(UnitTime_in_s);     //1.989000e+53
 
 
   /* converts the Hubble constant from h.s^-1 into h.Km.s^-1.Mpc-1 */
   // Would make much more sense to define this including the h100 factor.
-  Hubble = HUBBLE * UnitTime_in_s;//100.000
+  Hubble = HUBBLE * UnitTime_in_s;      //100.000
 
 #ifdef HALOMODEL
-  RhoCrit = 3 * Hubble * Hubble / (8 * M_PI * G);//27.75505 (h^2.10^10Msun.Mpc^-3)
+  RhoCrit = 3 * Hubble * Hubble / (8 * M_PI * G);       //27.75505 (h^2.10^10Msun.Mpc^-3)
 #endif
 }
 
@@ -479,25 +484,28 @@ void read_file_nrs(void)
   int i;
   char buf[1000];
   FILE *fd;
+
   sprintf(buf, "%s", FileNrDir);
   if(!(fd = fopen(buf, "r")))
     {
       char sbuf[1000];
+
       sprintf(sbuf, "file `%s' not found.\n", buf);
       terminate(sbuf);
     }
 
-  for(i = 0; i < 111; i++) //only 111files in ../input/filenrdir.txt are read in
+  for(i = 0; i < 111; i++)      //only 111files in ../input/filenrdir.txt are read in
     {
       if(fscanf(fd, " %d ", &ListInputFilrNr[i]) != 1)
-	{
-	  char sbuf[1000];
-	  sprintf(sbuf, "I/O error in file '%s'\n", buf);
-	  terminate(sbuf);
-	}
+        {
+          char sbuf[1000];
+
+          sprintf(sbuf, "I/O error in file '%s'\n", buf);
+          terminate(sbuf);
+        }
     }
   fclose(fd);
-  
+
 }
 
 
@@ -512,6 +520,7 @@ void read_reionization(void)
   if(!(fd = fopen(McFile, "r")))
     {
       char sbuf[1000];
+
       sprintf(sbuf, "file `%s' not found.\n", McFile);
       terminate(sbuf);
     }
@@ -537,13 +546,13 @@ void find_interpolate_reionization(double zcurr, int *tabindex, double *f1, doub
   double frac;
   int idx;
 
-  if(zcurr > Reion_z[0])	/* redshift is higher than the largest z in the table, take the 1st entry */
+  if(zcurr > Reion_z[0])        /* redshift is higher than the largest z in the table, take the 1st entry */
     {
       *tabindex = 0;
       *f1 = 1.;
       *f2 = 0.;
     }
-  else if(zcurr <= Reion_z[44])	/* redshift smaller than the smallest rho in the table, take the last entry */
+  else if(zcurr <= Reion_z[44]) /* redshift smaller than the smallest rho in the table, take the last entry */
     {
       *tabindex = 44;
       *f1 = 1.;
@@ -553,7 +562,7 @@ void find_interpolate_reionization(double zcurr, int *tabindex, double *f1, doub
     {
       idx = 0;
       while(Reion_z[idx + 1] > zcurr)
-	idx++;
+        idx++;
 
       frac = (-zcurr + Reion_z[idx]) / (Reion_z[idx] - Reion_z[idx + 1]);
       *f1 = 1 - frac;

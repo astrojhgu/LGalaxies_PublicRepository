@@ -23,7 +23,7 @@
 #include "proto.h"
 
 
-constexpr auto TABSIZE=91;
+constexpr auto TABSIZE = 91;
 
 
 static const char *name[] = {
@@ -69,14 +69,15 @@ void read_cooling_functions(void)
 
   for(i = 0; i < 8; i++)
     {
-      sprintf(buf, "%s/%s",CoolFunctionsDir,name[i]);
+      sprintf(buf, "%s/%s", CoolFunctionsDir, name[i]);
 
       if(!(fd = fopen(buf, "r")))
-		{
-		  char sbuf[1500];
-		  sprintf(sbuf, "file `%s' not found.\n", buf);
-		  terminate(sbuf);
-		}
+        {
+          char sbuf[1500];
+
+          sprintf(sbuf, "file `%s' not found.\n", buf);
+          terminate(sbuf);
+        }
 
       for(n = 0; n <= 90; n++)
         {

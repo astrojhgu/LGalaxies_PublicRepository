@@ -26,8 +26,8 @@
 #include "proto.h"
 
 
-constexpr auto MAXBLOCKS=5000;
-constexpr auto MAXCHARS =16;
+constexpr auto MAXBLOCKS = 5000;
+constexpr auto MAXCHARS = 16;
 
 static size_t TotBytes;
 static void *Base;
@@ -78,8 +78,8 @@ void mymalloc_init(void)
 }
 
 
-void report_detailed_memory_usage_of_largest_task(size_t * OldHighMarkBytes, const char *label,
-						  const char *func, const char *file, int line)
+void report_detailed_memory_usage_of_largest_task(size_t *OldHighMarkBytes, const char *label,
+                                                  const char *func, const char *file, int line)
 {
   if(AllocatedBytes > 1.1 * (*OldHighMarkBytes))
     {
@@ -87,10 +87,10 @@ void report_detailed_memory_usage_of_largest_task(size_t * OldHighMarkBytes, con
 
 //#ifndef MCMC
       printf("\nAt '%s', %s()/%s/%d: Allocation = %g Mbyte (on task=%d)\n\n",
-	         label, func, file, line, AllocatedBytes / (1024.0 * 1024.0), ThisTask);
-	  dump_memory_table();
+             label, func, file, line, AllocatedBytes / (1024.0 * 1024.0), ThisTask);
+      dump_memory_table();
 //#endif
-	  
+
       fflush(stdout);
     }
 }
@@ -110,9 +110,9 @@ void dump_memory_table(void)
       totBlocksize += BlockSize[i];
 
       printf("%4d %4d %d  %16s  %10.4f   %10.4f  %s()/%s/%d\n",
-	     ThisTask, i, MovableFlag[i], VarName + i * MAXCHARS, BlockSize[i] / (1024.0 * 1024.0),
-	     totBlocksize / (1024.0 * 1024.0), FunctionName + i * MAXCHARS,
-	     FileName + i * MAXCHARS, LineNumber[i]);
+             ThisTask, i, MovableFlag[i], VarName + i * MAXCHARS, BlockSize[i] / (1024.0 * 1024.0),
+             totBlocksize / (1024.0 * 1024.0), FunctionName + i * MAXCHARS,
+             FileName + i * MAXCHARS, LineNumber[i]);
     }
   printf("----------------------------------------------------------------------------------------\n");
 }
@@ -129,8 +129,9 @@ void *mymalloc_fullinfo(const char *varname, size_t n, const char *func, const c
   if(Nblocks >= MAXBLOCKS)
     {
       char buf[1000];
+
       sprintf(buf, "Task=%d: No blocks left in mymalloc_fullinfo() at %s()/%s/line %d. MAXBLOCKS=%d\n",
-	      ThisTask, func, file, line, MAXBLOCKS);
+              ThisTask, func, file, line, MAXBLOCKS);
       terminate(buf);
     }
 
@@ -138,13 +139,14 @@ void *mymalloc_fullinfo(const char *varname, size_t n, const char *func, const c
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "\nTask=%d: Not enough memory in mymalloc_fullinfo() to allocate %g MB for variable '%s' at %s()/%s/line %d (FreeBytes=%g MB).\n",
-	 ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
+        (buf,
+         "\nTask=%d: Not enough memory in mymalloc_fullinfo() to allocate %g MB for variable '%s' at %s()/%s/line %d (FreeBytes=%g MB).\n",
+         ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks] =(void*)((char*) Base + (TotBytes - FreeBytes));
+  Table[Nblocks] = (void *) ((char *) Base + (TotBytes - FreeBytes));
   FreeBytes -= n;
 
   strncpy(VarName + Nblocks * MAXCHARS, varname, MAXCHARS - 1);
@@ -167,7 +169,7 @@ void *mymalloc_fullinfo(const char *varname, size_t n, const char *func, const c
 
 
 void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const char *func, const char *file,
-				int line)
+                                int line)
 {
   if((n % 8) > 0)
     n = (n / 8 + 1) * 8;
@@ -178,8 +180,9 @@ void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const 
   if(Nblocks >= MAXBLOCKS)
     {
       char buf[1000];
+
       sprintf(buf, "Task=%d: No blocks left in mymalloc_fullinfo() at %s()/%s/line %d. MAXBLOCKS=%d\n",
-	      ThisTask, func, file, line, MAXBLOCKS);
+              ThisTask, func, file, line, MAXBLOCKS);
       terminate(buf);
     }
 
@@ -187,13 +190,14 @@ void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const 
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "\nTask=%d: Not enough memory in mymalloc_fullinfo() to allocate %g MB for variable '%s' at %s()/%s/line %d (FreeBytes=%g MB).\n",
-	 ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
+        (buf,
+         "\nTask=%d: Not enough memory in mymalloc_fullinfo() to allocate %g MB for variable '%s' at %s()/%s/line %d (FreeBytes=%g MB).\n",
+         ThisTask, n / (1024.0 * 1024.0), varname, func, file, line, FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks] = (void*)((char*)Base + (TotBytes - FreeBytes));
+  Table[Nblocks] = (void *) ((char *) Base + (TotBytes - FreeBytes));
   FreeBytes -= n;
 
   strncpy(VarName + Nblocks * MAXCHARS, varname, MAXCHARS - 1);
@@ -204,7 +208,7 @@ void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const 
   AllocatedBytes += n;
   BlockSize[Nblocks] = n;
   MovableFlag[Nblocks] = 1;
-  BasePointers[Nblocks] = (void**)ptr;
+  BasePointers[Nblocks] = (void **) ptr;
 
   Nblocks += 1;
 
@@ -225,8 +229,9 @@ void myfree_fullinfo(void *p, const char *func, const char *file, int line)
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf(buf, "Task=%d: Wrong call of myfree() at %s()/%s/line %d: not the last allocated block!\n",
-	      ThisTask, func, file, line);
+              ThisTask, func, file, line);
       terminate(buf);
     }
 
@@ -255,27 +260,29 @@ void myfree_movable_fullinfo(void *p, const char *func, const char *file, int li
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "Task=%d: Wrong call of myfree_movable() from %s()/%s/line %d - this block has not been allocated!\n",
-	 ThisTask, func, file, line);
+        (buf,
+         "Task=%d: Wrong call of myfree_movable() from %s()/%s/line %d - this block has not been allocated!\n",
+         ThisTask, func, file, line);
       terminate(buf);
     }
 
-  if(nr < Nblocks - 1)		/* the block is not the last allocated block */
+  if(nr < Nblocks - 1)          /* the block is not the last allocated block */
     {
       /* check that all subsequent blocks are actually movable */
       for(i = nr + 1; i < Nblocks; i++)
-	if(MovableFlag[i] == 0)
-	  {
-	    dump_memory_table();
-	    char buf[1000];
-	    sprintf
-	      (buf,
-	       "Task=%d: Wrong call of myfree_movable() from %s()/%s/line %d - behind block=%d there are subsequent non-movable allocated blocks\n",
-	       ThisTask, func, file, line, nr);
-	    terminate(buf);
-	  }
+        if(MovableFlag[i] == 0)
+          {
+            dump_memory_table();
+            char buf[1000];
+
+            sprintf
+              (buf,
+               "Task=%d: Wrong call of myfree_movable() from %s()/%s/line %d - behind block=%d there are subsequent non-movable allocated blocks\n",
+               ThisTask, func, file, line, nr);
+            terminate(buf);
+          }
     }
 
 
@@ -289,12 +296,12 @@ void myfree_movable_fullinfo(void *p, const char *func, const char *file, int li
     length += BlockSize[i];
 
   if(nr < Nblocks - 1)
-    memmove((char*)Table[nr + 1] + offset, Table[nr + 1], length);
+    memmove((char *) Table[nr + 1] + offset, Table[nr + 1], length);
 
   for(i = nr + 1; i < Nblocks; i++)
     {
-      Table[i] = (char*)Table[i]+offset;
-      *BasePointers[i] = (char*)*BasePointers[i] + offset;
+      Table[i] = (char *) Table[i] + offset;
+      *BasePointers[i] = (char *) *BasePointers[i] + offset;
     }
 
   for(i = nr + 1; i < Nblocks; i++)
@@ -332,9 +339,10 @@ void *myrealloc_fullinfo(void *p, size_t n, const char *func, const char *file, 
   if(p != Table[Nblocks - 1])
     {
       char buf[1000];
+
       dump_memory_table();
       sprintf(buf, "Task=%d: Wrong call of myrealloc() at %s()/%s/line %d - not the last allocated block!\n",
-	      ThisTask, func, file, line);
+              ThisTask, func, file, line);
       terminate(buf);
     }
 
@@ -345,14 +353,15 @@ void *myrealloc_fullinfo(void *p, size_t n, const char *func, const char *file, 
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "Task=%d: Not enough memory in myremalloc(n=%g MB) at %s()/%s/line %d. previous=%g FreeBytes=%g MB\n",
-	 ThisTask, n / (1024.0 * 1024.0), func, file, line, BlockSize[Nblocks - 1] / (1024.0 * 1024.0),
-	 FreeBytes / (1024.0 * 1024.0));
+        (buf,
+         "Task=%d: Not enough memory in myremalloc(n=%g MB) at %s()/%s/line %d. previous=%g FreeBytes=%g MB\n",
+         ThisTask, n / (1024.0 * 1024.0), func, file, line, BlockSize[Nblocks - 1] / (1024.0 * 1024.0),
+         FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
-  Table[Nblocks - 1] = (char*)Base + (TotBytes - FreeBytes);
+  Table[Nblocks - 1] = (char *) Base + (TotBytes - FreeBytes);
   FreeBytes -= n;
 
   AllocatedBytes += n;
@@ -388,27 +397,29 @@ void *myrealloc_movable_fullinfo(void *p, size_t n, const char *func, const char
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "Task=%d: Wrong call of myrealloc_movable() from %s()/%s/line %d - this block has not been allocated!\n",
-	 ThisTask, func, file, line);
+        (buf,
+         "Task=%d: Wrong call of myrealloc_movable() from %s()/%s/line %d - this block has not been allocated!\n",
+         ThisTask, func, file, line);
       terminate(buf);
     }
 
-  if(nr < Nblocks - 1)		/* the block is not the last allocated block */
+  if(nr < Nblocks - 1)          /* the block is not the last allocated block */
     {
       /* check that all subsequent blocks are actually movable */
       for(i = nr + 1; i < Nblocks; i++)
-	if(MovableFlag[i] == 0)
-	  {
-	    dump_memory_table();
-	    char buf[1000];
-	    sprintf
-	      (buf,
-	       "Task=%d: Wrong call of myrealloc_movable() from %s()/%s/line %d - behind block=%d there are subsequent non-movable allocated blocks\n",
-	       ThisTask, func, file, line, nr);
-	    terminate(buf);
-	  }
+        if(MovableFlag[i] == 0)
+          {
+            dump_memory_table();
+            char buf[1000];
+
+            sprintf
+              (buf,
+               "Task=%d: Wrong call of myrealloc_movable() from %s()/%s/line %d - behind block=%d there are subsequent non-movable allocated blocks\n",
+               ThisTask, func, file, line, nr);
+            terminate(buf);
+          }
     }
 
 
@@ -419,11 +430,12 @@ void *myrealloc_movable_fullinfo(void *p, size_t n, const char *func, const char
     {
       dump_memory_table();
       char buf[1000];
+
       sprintf
-	(buf,
-	 "Task=%d: at %s()/%s/line %d: Not enough memory in myremalloc_movable(n=%g MB). previous=%g FreeBytes=%g MB\n",
-	 ThisTask, func, file, line, n / (1024.0 * 1024.0), BlockSize[nr] / (1024.0 * 1024.0),
-	 FreeBytes / (1024.0 * 1024.0));
+        (buf,
+         "Task=%d: at %s()/%s/line %d: Not enough memory in myremalloc_movable(n=%g MB). previous=%g FreeBytes=%g MB\n",
+         ThisTask, func, file, line, n / (1024.0 * 1024.0), BlockSize[nr] / (1024.0 * 1024.0),
+         FreeBytes / (1024.0 * 1024.0));
       terminate(buf);
     }
 
@@ -434,13 +446,13 @@ void *myrealloc_movable_fullinfo(void *p, size_t n, const char *func, const char
     length += BlockSize[i];
 
   if(nr < Nblocks - 1)
-    memmove((char*)Table[nr + 1] + offset, Table[nr + 1], length);
+    memmove((char *) Table[nr + 1] + offset, Table[nr + 1], length);
 
   for(i = nr + 1; i < Nblocks; i++)
     {
-      Table[i] = (char*) Table[i]+offset;
+      Table[i] = (char *) Table[i] + offset;
 
-      *BasePointers[i] = (char*) *BasePointers[i] + offset;
+      *BasePointers[i] = (char *) *BasePointers[i] + offset;
     }
 
   FreeBytes -= n;

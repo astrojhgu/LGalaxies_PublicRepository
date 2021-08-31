@@ -48,46 +48,44 @@ void reincorporate_gas(int p, double dt)
 
   reincorporated = 0.;
 
-  mass_checks("reincorporate_gas #1",p);
+  mass_checks("reincorporate_gas #1", p);
 
 
   if(FeedbackEjectionModel == 0)
     {
       if(ReIncorporationModel == 0)
-	{
-	  reinc_time= (Hubble_h/Gal[p].Mvir)*(ReIncorporationFactor/UnitTime_in_years);
-	  reincorporated = Gal[p].EjectedMass / reinc_time * dt;
-	  /* Henriques2013 Mdot_eject=-gama_ej*M_ejected*M_vir Mvir should be in units of 1e12, but inside the
-	   * code Mvir is already in units of 1.e10*/
-	}
-      else
-	if(ReIncorporationModel == 1)
-	  reincorporated = ReIncorporationFactor * Gal[p].EjectedMass / (Gal[p].Rvir / Gal[p].Vvir) * Gal[p].Vvir/220. *dt ;
+        {
+          reinc_time = (Hubble_h / Gal[p].Mvir) * (ReIncorporationFactor / UnitTime_in_years);
+          reincorporated = Gal[p].EjectedMass / reinc_time * dt;
+          /* Henriques2013 Mdot_eject=-gama_ej*M_ejected*M_vir Mvir should be in units of 1e12, but inside the
+           * code Mvir is already in units of 1.e10*/
+        }
+      else if(ReIncorporationModel == 1)
+        reincorporated =
+          ReIncorporationFactor * Gal[p].EjectedMass / (Gal[p].Rvir / Gal[p].Vvir) * Gal[p].Vvir / 220. * dt;
       /* Guo2010 -> Mdot_eject=-gama_ej * M_ejected/tdyn * Vvir/220 */
-	else
-	  if(ReIncorporationModel == 2)
-	    reincorporated = ReIncorporationFactor * Gal[p].EjectedMass / (Gal[p].Rvir / Gal[p].Vvir) * dt;
+      else if(ReIncorporationModel == 2)
+        reincorporated = ReIncorporationFactor * Gal[p].EjectedMass / (Gal[p].Rvir / Gal[p].Vvir) * dt;
     }
   else if(FeedbackEjectionModel == 1)
     {
       reincorporated = ReIncorporationFactor * Gal[p].EjectedMass /
-	  (Gal[p].Rvir * min(FeedbackEjectionEfficiency,1.)*sqrt(EtaSNcode * EnergySNcode)/(Gal[p].Vvir*Gal[p].Vvir))
-	  * Gal[p].Vvir/220. * 1.e-6* dt ;
+        (Gal[p].Rvir * min(FeedbackEjectionEfficiency, 1.) * sqrt(EtaSNcode * EnergySNcode) /
+         (Gal[p].Vvir * Gal[p].Vvir)) * Gal[p].Vvir / 220. * 1.e-6 * dt;
     }
 
-  if (reincorporated > Gal[p].EjectedMass)
+  if(reincorporated > Gal[p].EjectedMass)
     reincorporated = Gal[p].EjectedMass;
-	
-  mass_checks("reincorporate_gas #1.5",p);
 
-  /*Update ejected and hot gas contents*/
-  if (Gal[p].EjectedMass > 0.)
+  mass_checks("reincorporate_gas #1.5", p);
+
+  /*Update ejected and hot gas contents */
+  if(Gal[p].EjectedMass > 0.)
     {
-      fraction=((float)reincorporated)/Gal[p].EjectedMass;
-      transfer_gas(p,"Hot",p,"Ejected",fraction,"reincorporate_gas", __LINE__);
+      fraction = ((float) reincorporated) / Gal[p].EjectedMass;
+      transfer_gas(p, "Hot", p, "Ejected", fraction, "reincorporate_gas", __LINE__);
     }
 
-  mass_checks("reincorporate_gas #2",p);
+  mass_checks("reincorporate_gas #2", p);
 
 }
-

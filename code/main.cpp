@@ -88,40 +88,40 @@ int main(int argc, char **argv)
 #endif
 
 
-  if(ThisTask==0)
+  if(ThisTask == 0)
     {
- 	  printf("\n\n\n");
- 	  printf("**************************************************************************\n");
- 	  printf("*                                                                        *\n");
- 	  printf("*                   Copyright (C) <2016>  <L-Galaxies>                   *\n");
- 	  printf("*                                                                        *\n");
- 	  printf("*  This program is free software: you can redistribute it and/or modify  *\n");
- 	  printf("*  it under the terms of the GNU General Public License as published by  *\n");
- 	  printf("*  the Free Software Foundation, either version 3 of the License, or     *\n");
- 	  printf("*  (at your option) any later version.                                   *\n");
- 	  printf("*                                                                        *\n");
- 	  printf("*  This program is distributed in the hope that it will be useful,       *\n");
- 	  printf("*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n");
- 	  printf("*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n");
- 	  printf("*  GNU General Public License for more details.                          *\n");
- 	  printf("*                                                                        *\n");
- 	  printf("*  You should have received a copy of the GNU General Public License     *\n");
- 	  printf("*  along with this program.  If not, see <http://www.gnu.org/licenses/>  *\n");
- 	  printf("*                                                                        *\n");
- 	  printf("**************************************************************************\n\n\n");
+      printf("\n\n\n");
+      printf("**************************************************************************\n");
+      printf("*                                                                        *\n");
+      printf("*                   Copyright (C) <2016>  <L-Galaxies>                   *\n");
+      printf("*                                                                        *\n");
+      printf("*  This program is free software: you can redistribute it and/or modify  *\n");
+      printf("*  it under the terms of the GNU General Public License as published by  *\n");
+      printf("*  the Free Software Foundation, either version 3 of the License, or     *\n");
+      printf("*  (at your option) any later version.                                   *\n");
+      printf("*                                                                        *\n");
+      printf("*  This program is distributed in the hope that it will be useful,       *\n");
+      printf("*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n");
+      printf("*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n");
+      printf("*  GNU General Public License for more details.                          *\n");
+      printf("*                                                                        *\n");
+      printf("*  You should have received a copy of the GNU General Public License     *\n");
+      printf("*  along with this program.  If not, see <http://www.gnu.org/licenses/>  *\n");
+      printf("*                                                                        *\n");
+      printf("**************************************************************************\n\n\n");
     }
 
-  if(argc > 3 || argc<2)
+  if(argc > 3 || argc < 2)
     {
-	  printf("\n  Wrong number of runtime arguments\n\n");
+      printf("\n  Wrong number of runtime arguments\n\n");
       printf("\n  usage: ./L-Galaxies <parameterfile>\n\n");
       endrun(0);
     }
 
- if (ThisTask == 0)
-   printf("%s\n",COMPILETIMESETTINGS); 
+  if(ThisTask == 0)
+    printf("%s\n", COMPILETIMESETTINGS);
 
- /* check compatibility of some Makefile Options*/
+  /* check compatibility of some Makefile Options */
   check_options();
 
   /*Reads the parameter file, given as an argument at run time. */
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 
 #ifdef MR_PLUS_MRII
   //Start with MR files and later change to MRII
-  LastDarkMatterSnapShot=LastDarkMatterSnapShot_MR;
+  LastDarkMatterSnapShot = LastDarkMatterSnapShot_MR;
   sprintf(FileWithZList, "%s", FileWithZList_MR);
   sprintf(FileWithZList_OriginalCosm, "%s", FileWithZList_OriginalCosm_MR);
 #endif
@@ -139,11 +139,11 @@ int main(int argc, char **argv)
   sprintf(FinalOutputDir, "%s", OutputDir);
 #ifndef MCMC
   if(argc == 3)
-	sprintf(OutputDir, "%s", argv[2]);
+    sprintf(OutputDir, "%s", argv[2]);
 #else
-  FirstChainNumber=0;
+  FirstChainNumber = 0;
   if(argc == 3)
-  	FirstChainNumber=atoi(argv[2]);
+    FirstChainNumber = atoi(argv[2]);
 #endif
 
   //time(&start);
@@ -166,63 +166,67 @@ int main(int argc, char **argv)
 
 
 #ifndef MCMC
-  nfiles=get_nr_files_to_process(ThisTask);
-  FileToProcess=static_cast<int*>(mymalloc("FileToProcess", sizeof(int) * nfiles));
-  TaskToProcess=static_cast<int*>(mymalloc("TaskToProcess", sizeof(int) * nfiles));
+  nfiles = get_nr_files_to_process(ThisTask);
+  FileToProcess = static_cast < int *>(mymalloc("FileToProcess", sizeof(int) * nfiles));
+  TaskToProcess = static_cast < int *>(mymalloc("TaskToProcess", sizeof(int) * nfiles));
+
   assign_files_to_tasks(FileToProcess, TaskToProcess, ThisTask, NTask, nfiles);
 
   int file;
+
   for(file = 0; file < nfiles; file++)
     {
-	  if(ThisTask==TaskToProcess[file])
-		  filenr=FileToProcess[file];
-	  else
-		  continue;
+      if(ThisTask == TaskToProcess[file])
+        filenr = FileToProcess[file];
+      else
+        continue;
 #else //MCMC
   /* In MCMC mode only one file is loaded into memory
    * and the sampling for all the steps is done on it */
-	sprintf(SimulationDir, "%s/", SimulationDir);
+  sprintf(SimulationDir, "%s/", SimulationDir);
   for(filenr = MCMCTreeSampleFile; filenr <= MCMCTreeSampleFile; filenr++)
-	{
+    {
 #endif //MCMC
-	  time(&start);
+      time(&start);
 
-	  #ifdef PARALLEL
+#ifdef PARALLEL
 #ifndef MCMC
-	  time_t current;
-	  do
-	  	time(&current);
-	  //while(difftime(current, start) < 5.0 * ThisTask);
-	  while(difftime(current, start) < 1.0 * ThisTask);
+      time_t current;
+
+      do
+        time(&current);
+      //while(difftime(current, start) < 5.0 * ThisTask);
+      while(difftime(current, start) < 1.0 * ThisTask);
 
 #endif
 #endif
 
-	  load_tree_table(filenr);
+      load_tree_table(filenr);
 #ifdef MCMC
-      Senna(); // run the model in MCMC MODE
+      Senna();                  // run the model in MCMC MODE
 #else
-      SAM(filenr); // run the model in NORMAL MODE
+      SAM(filenr);              // run the model in NORMAL MODE
 #endif
 
 #ifdef MCMC
-      break;	//break loop on files since the MCMC is done on a single file
+      break;                    //break loop on files since the MCMC is done on a single file
 #else
       time(&current);
-      printf("\ndone tree file %d in %ldmin and %lds\n\n", filenr, (current - start)/60, (current - start)%60);
+      printf("\ndone tree file %d in %ldmin and %lds\n\n", filenr, (current - start) / 60,
+             (current - start) % 60);
 
 #endif //MCMC
       free_tree_table();
       //if temporary directory given as argument
-       if(argc == 3)
-         {
+      if(argc == 3)
+        {
 #ifdef GALAXYTREE
-    	   sprintf(buf, "mv %s/%s_galtree_%d %s", OutputDir,FileNameGalaxies, filenr, FinalOutputDir);
+          sprintf(buf, "mv %s/%s_galtree_%d %s", OutputDir, FileNameGalaxies, filenr, FinalOutputDir);
 #else
-    	   sprintf(buf, "mv %s/%s_z*_%d %s", OutputDir,FileNameGalaxies, filenr, FinalOutputDir);
+          sprintf(buf, "mv %s/%s_z*_%d %s", OutputDir, FileNameGalaxies, filenr, FinalOutputDir);
 #endif
-    	   system(buf);
-         }
+          system(buf);
+        }
     }
 
 #ifndef MCMC
@@ -248,22 +252,24 @@ void SAM(int filenr)
 
 #ifdef MCMC
   int ii;
+
   MCMC_GAL = mymalloc("MCMC_Gal", sizeof(struct MCMC_GALAXY) * MCMCAllocFactor);
-  for(ii=0;ii<NOUT;ii++)
-  	  TotMCMCGals[ii] = 0;
+  for(ii = 0; ii < NOUT; ii++)
+    TotMCMCGals[ii] = 0;
 
 #ifdef MR_PLUS_MRII
   change_dark_matter_sim("MR");
 #else
-  if(CurrentMCMCStep==1)
-  	read_sample_info();
+  if(CurrentMCMCStep == 1)
+    read_sample_info();
 #ifdef HALOMODEL
   else
     {
       int snap, ii;
-      for(snap=0;snap<NOUT;snap++)
-	for(ii=0;ii<NFofsInSample[snap];ii++)
-	  MCMC_FOF[ii].NGalsInFoF[snap]=0;
+
+      for(snap = 0; snap < NOUT; snap++)
+        for(ii = 0; ii < NFofsInSample[snap]; ii++)
+          MCMC_FOF[ii].NGalsInFoF[snap] = 0;
     }
 #endif //HALOMODEL
 #endif //MR_PLUS_MRII
@@ -289,17 +295,17 @@ void SAM(int filenr)
 
   //for(treenr = 0; treenr < NTrees_Switch_MR_MRII; treenr++)
   for(treenr = 0; treenr < Ntrees; treenr++)
-  {
-  //printf("doing tree %d of %d\n", treenr, Ntrees);
+    {
+      //printf("doing tree %d of %d\n", treenr, Ntrees);
 #ifdef MR_PLUS_MRII
-  	if(treenr == NTrees_Switch_MR_MRII)
-  		change_dark_matter_sim("MRII");
+      if(treenr == NTrees_Switch_MR_MRII)
+        change_dark_matter_sim("MRII");
 #endif
 
-  	load_tree(treenr);
+      load_tree(treenr);
 #ifdef MCMC
 #ifdef PRELOAD_TREES
-      if(CurrentMCMCStep==1)
+      if(CurrentMCMCStep == 1)
 #endif
 #endif
         scale_cosmology(TreeNHalos[treenr]);
@@ -312,44 +318,46 @@ void SAM(int filenr)
       IndexStored = 0;
 #endif
       int snapnum;
+
       //LastSnapShotNr is the highest output snapshot
       /* we process the snapshots now in temporal order 
        * (as a means to reduce peak memory usage) */
       for(snapnum = 0; snapnum <= LastSnapShotNr; snapnum++)
-      {
+        {
 #ifdef MCMC
-    	  /* read the appropriate parameter list for current snapnum
-    	   * into the parameter variables to be used in construct_galaxies */
-    	  read_mcmc_par(snapnum);
+          /* read the appropriate parameter list for current snapnum
+           * into the parameter variables to be used in construct_galaxies */
+          read_mcmc_par(snapnum);
 #ifdef HALOMODEL
           //because we need halo masses even for FOFs
           //with no galaxies it needs to be done here
           assign_FOF_masses(snapnum, treenr);
 #endif
 #endif
-    	  for(halonr = 0; halonr < TreeNHalos[treenr]; halonr++)
-    	  	if(HaloAux[halonr].DoneFlag == 0 && Halo[halonr].SnapNum == snapnum)
-    	  		construct_galaxies(filenr, treenr, halonr);
-      }
+          for(halonr = 0; halonr < TreeNHalos[treenr]; halonr++)
+            if(HaloAux[halonr].DoneFlag == 0 && Halo[halonr].SnapNum == snapnum)
+              construct_galaxies(filenr, treenr, halonr);
+        }
 
       /* output remaining galaxies as needed */
       while(NHaloGal)
-      	output_galaxy(treenr, 0);
+        output_galaxy(treenr, 0);
 
 
 #ifndef MCMC
 #ifdef GALAXYTREE
       save_galaxy_tree_finalize(filenr, treenr);
 #ifndef PARALLEL
-      if((treenr/100)*100==treenr) printf("treenr=%d  TotGalCount=%d\n", treenr, TotGalCount);
+      if((treenr / 100) * 100 == treenr)
+        printf("treenr=%d  TotGalCount=%d\n", treenr, TotGalCount);
 #endif
       fflush(stdout);
       fprintf(fdg, "%d\n", NGalTree);
 #endif
-#else//ifdef MCMC
+#else //ifdef MCMC
 #endif
       free_galaxies_and_tree();
-  }//loop on trees
+    }                           //loop on trees
 
 #ifdef MCMC
   double lhood = get_likelihood();
@@ -357,8 +365,8 @@ void SAM(int filenr)
 #ifdef MR_PLUS_MRII
   free(MCMC_FOF);
 #else
-  if(CurrentMCMCStep==ChainLength)
-  	free(MCMC_FOF);
+  if(CurrentMCMCStep == ChainLength)
+    free(MCMC_FOF);
 #endif
 
   myfree(MCMC_GAL);
@@ -396,29 +404,29 @@ void construct_galaxies(int filenr, int treenr, int halonr)
 
   prog = Halo[halonr].FirstProgenitor;
 
-  while(prog >= 0) //If halo has a progenitor
+  while(prog >= 0)              //If halo has a progenitor
     {
-      if(HaloAux[prog].DoneFlag == 0) //If progenitor hasn't been done yet
-		construct_galaxies(filenr, treenr, prog);
-      prog = Halo[prog].NextProgenitor;	//Jump to next halo in progenitors FOF
+      if(HaloAux[prog].DoneFlag == 0)   //If progenitor hasn't been done yet
+        construct_galaxies(filenr, treenr, prog);
+      prog = Halo[prog].NextProgenitor; //Jump to next halo in progenitors FOF
     }
 
   //Now check for the progenitors of all the halos in the current FOF group
-  fofhalo = Halo[halonr].FirstHaloInFOFgroup;	//Starting at the first halo in current FOF
-  if(HaloAux[fofhalo].HaloFlag == 0)	//If it hasn't been done
+  fofhalo = Halo[halonr].FirstHaloInFOFgroup;   //Starting at the first halo in current FOF
+  if(HaloAux[fofhalo].HaloFlag == 0)    //If it hasn't been done
     {
-      HaloAux[fofhalo].HaloFlag = 1;	//mark as to do
-      while(fofhalo >= 0)	//go through all the halos in current FOF
+      HaloAux[fofhalo].HaloFlag = 1;    //mark as to do
+      while(fofhalo >= 0)       //go through all the halos in current FOF
         {
-    	  prog = Halo[fofhalo].FirstProgenitor;
-    	  while(prog >= 0)	//build its progenitors
-    	    {
-    		  if(HaloAux[prog].DoneFlag == 0)
-    			construct_galaxies(filenr, treenr, prog);
-    		  prog = Halo[prog].NextProgenitor;
-    	    }
+          prog = Halo[fofhalo].FirstProgenitor;
+          while(prog >= 0)      //build its progenitors
+            {
+              if(HaloAux[prog].DoneFlag == 0)
+                construct_galaxies(filenr, treenr, prog);
+              prog = Halo[prog].NextProgenitor;
+            }
 
-    	  fofhalo = Halo[fofhalo].NextHaloInFOFgroup;	//Jump to next halo in FOF
+          fofhalo = Halo[fofhalo].NextHaloInFOFgroup;   //Jump to next halo in FOF
         }
     }
 
@@ -430,27 +438,27 @@ void construct_galaxies(int filenr, int treenr, int halonr)
 
 
   fofhalo = Halo[halonr].FirstHaloInFOFgroup;
-  if(HaloAux[fofhalo].HaloFlag == 1)	//If it is marked as an halo to do
+  if(HaloAux[fofhalo].HaloFlag == 1)    //If it is marked as an halo to do
     {
       ngal = 0;
       HaloAux[fofhalo].HaloFlag = 2;
 
-      cenngal = set_merger_center(fofhalo);	//Find type 0 for type 1 to merge into
+      cenngal = set_merger_center(fofhalo);     //Find type 0 for type 1 to merge into
 
       /*For all the halos in the current FOF join all the progenitor galaxies together
        * ngals will be the total number of galaxies in the current FOF*/
       while(fofhalo >= 0)
         {
-    	  ngal = join_galaxies_of_progenitors(fofhalo, ngal, &cenngal);
-    	  fofhalo = Halo[fofhalo].NextHaloInFOFgroup;
+          ngal = join_galaxies_of_progenitors(fofhalo, ngal, &cenngal);
+          fofhalo = Halo[fofhalo].NextHaloInFOFgroup;
         }
 
 
       /*Evolve the Galaxies -> SAM! */
       evolve_galaxies(Halo[halonr].FirstHaloInFOFgroup, ngal, treenr, cenngal);
 
-      for (p =0;p<ngal;p++)
-	    mass_checks("Construct_galaxies #1",p);
+      for(p = 0; p < ngal; p++)
+        mass_checks("Construct_galaxies #1", p);
     }
 }
 
@@ -485,29 +493,29 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
    * pointer is changed to a subhalo which have the maximum mass (This should
    * only happen in the case that the leaf on the firstprogenitor branch occurs
    * as a subhalo, in that case no galaxy would be assigned to it). */
-  if(prog >= 0)			//If halo has progenitors
+  if(prog >= 0)                 //If halo has progenitors
     {
-      if(HaloAux[prog].NGalaxies == 0)	//if progenitor has no galaxies
-	while(prog >= 0)
-	  {
-	    int currentgal;
+      if(HaloAux[prog].NGalaxies == 0)  //if progenitor has no galaxies
+        while(prog >= 0)
+          {
+            int currentgal;
 
-	    for(i = 0, currentgal = HaloAux[prog].FirstGalaxy; i < HaloAux[prog].NGalaxies; i++)
-	      {
-		if(HaloGal[currentgal].Type == 0 || HaloGal[currentgal].Type == 1)
-		  {
-		    if(Halo[prog].Len > lenmax)
-		      {
-			lenmax = Halo[prog].Len;
-			first_occupied = prog;	//define the new first_occupied
-		      }
-		  }
-		currentgal = HaloGal[currentgal].NextGalaxy;
-	      }
-	    prog = Halo[prog].NextProgenitor;
-	  }
+            for(i = 0, currentgal = HaloAux[prog].FirstGalaxy; i < HaloAux[prog].NGalaxies; i++)
+              {
+                if(HaloGal[currentgal].Type == 0 || HaloGal[currentgal].Type == 1)
+                  {
+                    if(Halo[prog].Len > lenmax)
+                      {
+                        lenmax = Halo[prog].Len;
+                        first_occupied = prog;  //define the new first_occupied
+                      }
+                  }
+                currentgal = HaloGal[currentgal].NextGalaxy;
+              }
+            prog = Halo[prog].NextProgenitor;
+          }
     }
-   
+
   lenmax = 0;
   prog = Halo[halonr].FirstProgenitor;
   mostmassive = Halo[halonr].FirstProgenitor;
@@ -517,10 +525,10 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
   while(prog >= 0)
     {
       if(Halo[prog].Len > lenmax)
-	{
-	  lenmax = Halo[prog].Len;
-	  mostmassive = prog;
-	}
+        {
+          lenmax = Halo[prog].Len;
+          mostmassive = prog;
+        }
       prog = Halo[prog].NextProgenitor;
     }
 
@@ -530,92 +538,94 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
   while(prog >= 0)
     {
       int currentgal;
+
       for(i = 0, currentgal = HaloAux[prog].FirstGalaxy; i < HaloAux[prog].NGalaxies; i++)
-	{
-	  if(ngal >= MaxGal)
-	    {
-	      AllocValue_MaxGal *= ALLOC_INCREASE_FACTOR;
-	      MaxGal = AllocValue_MaxGal;
-	      if(MaxGal<ngal+1) MaxGal=ngal+1;
-	      Gal = static_cast<GALAXY*>(myrealloc_movable(Gal, sizeof(struct GALAXY) * MaxGal));
-	    }
-	  if(*cenngal==currentgal)
-	    *cenngal=ngal;
+        {
+          if(ngal >= MaxGal)
+            {
+              AllocValue_MaxGal *= ALLOC_INCREASE_FACTOR;
+              MaxGal = AllocValue_MaxGal;
+              if(MaxGal < ngal + 1)
+                MaxGal = ngal + 1;
+              Gal = static_cast < GALAXY * >(myrealloc_movable(Gal, sizeof(struct GALAXY) * MaxGal));
+            }
+          if(*cenngal == currentgal)
+            *cenngal = ngal;
 
-	  /* Copy galaxy properties from progenitor,
-	   * except for those that need initialising */
-	  Gal[ngal] = HaloGal[currentgal];
+          /* Copy galaxy properties from progenitor,
+           * except for those that need initialising */
+          Gal[ngal] = HaloGal[currentgal];
 
-	  Gal[ngal].HaloNr = halonr;
-	  Gal[ngal].CoolingRadius = 0.0;
-	  Gal[ngal].CoolingGas = 0.0;
+          Gal[ngal].HaloNr = halonr;
+          Gal[ngal].CoolingRadius = 0.0;
+          Gal[ngal].CoolingGas = 0.0;
 
-	  Gal[ngal].PrimordialAccretionRate = 0.0;
-	  Gal[ngal].CoolingRate = 0.0;
-	  Gal[ngal].CoolingRate_beforeAGN = 0.0;
-	  Gal[ngal].Sfr = 0.0;
-	  Gal[ngal].SfrBulge = 0.0;
-	  Gal[ngal].QuasarAccretionRate=0.0;
-	  Gal[ngal].RadioAccretionRate=0.0;
+          Gal[ngal].PrimordialAccretionRate = 0.0;
+          Gal[ngal].CoolingRate = 0.0;
+          Gal[ngal].CoolingRate_beforeAGN = 0.0;
+          Gal[ngal].Sfr = 0.0;
+          Gal[ngal].SfrBulge = 0.0;
+          Gal[ngal].QuasarAccretionRate = 0.0;
+          Gal[ngal].RadioAccretionRate = 0.0;
 #ifdef GALAXYTREE
-	  Gal[ngal].FirstProgGal = HaloGal[currentgal].GalTreeIndex;	/* CHECK */
+          Gal[ngal].FirstProgGal = HaloGal[currentgal].GalTreeIndex;    /* CHECK */
 #endif
-	  // To fail this check means that we copy in a failed galaxy
-	  mass_checks("Middle of join_galaxies_of_progenitors",ngal);
+          // To fail this check means that we copy in a failed galaxy
+          mass_checks("Middle of join_galaxies_of_progenitors", ngal);
 
-	  /* Update Properties of this galaxy with physical properties of halo */
-	  /* this deals with the central galaxies of subhalos */
-	  if(Gal[ngal].Type == 0 || Gal[ngal].Type == 1)
-	    {
-	      if(prog == first_occupied)
-		{
+          /* Update Properties of this galaxy with physical properties of halo */
+          /* this deals with the central galaxies of subhalos */
+          if(Gal[ngal].Type == 0 || Gal[ngal].Type == 1)
+            {
+              if(prog == first_occupied)
+                {
 #ifdef HALOPROPERTIES
-		  Gal[ngal].HaloM_Mean200 = Halo[halonr].M_Mean200;
-		  Gal[ngal].HaloM_Crit200 = Halo[halonr].M_Crit200;
-		  Gal[ngal].HaloM_TopHat = Halo[halonr].M_TopHat;
-		  Gal[ngal].HaloVelDisp = Halo[halonr].VelDisp;
-		  Gal[ngal].HaloVmax = Halo[halonr].Vmax;
+                  Gal[ngal].HaloM_Mean200 = Halo[halonr].M_Mean200;
+                  Gal[ngal].HaloM_Crit200 = Halo[halonr].M_Crit200;
+                  Gal[ngal].HaloM_TopHat = Halo[halonr].M_TopHat;
+                  Gal[ngal].HaloVelDisp = Halo[halonr].VelDisp;
+                  Gal[ngal].HaloVmax = Halo[halonr].Vmax;
 #endif
-		  Gal[ngal].MostBoundID = Halo[halonr].MostBoundID;
-		  for(j = 0; j < 3; j++)
-		    {
-		      Gal[ngal].Pos[j] = Halo[halonr].Pos[j];
-		      Gal[ngal].Vel[j] = Halo[halonr].Vel[j];
+                  Gal[ngal].MostBoundID = Halo[halonr].MostBoundID;
+                  for(j = 0; j < 3; j++)
+                    {
+                      Gal[ngal].Pos[j] = Halo[halonr].Pos[j];
+                      Gal[ngal].Vel[j] = Halo[halonr].Vel[j];
 #ifdef HALOPROPERTIES
-		      Gal[ngal].HaloPos[j] = Halo[halonr].Pos[j];
-		      Gal[ngal].HaloVel[j] = Halo[halonr].Vel[j];
+                      Gal[ngal].HaloPos[j] = Halo[halonr].Pos[j];
+                      Gal[ngal].HaloVel[j] = Halo[halonr].Vel[j];
 #endif
-		    }
+                    }
 
-		  Gal[ngal].Len = Halo[halonr].Len;
+                  Gal[ngal].Len = Halo[halonr].Len;
 
-		  // FOFCentralGal property in case that is different from FirstGalaxy
-		  if(halonr == Halo[halonr].FirstHaloInFOFgroup)
-		    update_centralgal(ngal, halonr);
-		  else
-		    update_type_1(ngal, halonr, prog);
+                  // FOFCentralGal property in case that is different from FirstGalaxy
+                  if(halonr == Halo[halonr].FirstHaloInFOFgroup)
+                    update_centralgal(ngal, halonr);
+                  else
+                    update_type_1(ngal, halonr, prog);
 
-		  if(DiskRadiusModel == 1 || DiskRadiusModel == 2)
-		    {
-		      Gal[ngal].GasDiskRadius = get_disk_radius(halonr, ngal);
-		      Gal[ngal].StellarDiskRadius = Gal[ngal].GasDiskRadius;
-		    }
-		  Gal[ngal].Vmax = Halo[halonr].Vmax;
-		}
-	      else //type 2 galaxies
-		{
-		  update_type_2(ngal, halonr, prog, mostmassive);
-		}
-	    }
+                  if(DiskRadiusModel == 1 || DiskRadiusModel == 2)
+                    {
+                      Gal[ngal].GasDiskRadius = get_disk_radius(halonr, ngal);
+                      Gal[ngal].StellarDiskRadius = Gal[ngal].GasDiskRadius;
+                    }
+                  Gal[ngal].Vmax = Halo[halonr].Vmax;
+                }
+              else              //type 2 galaxies
+                {
+                  update_type_2(ngal, halonr, prog, mostmassive);
+                }
+            }
 
-	  /* Note: Galaxies that are already type=2 do not need a special treatment at this point */
-	  if(Gal[ngal].Type < 0 || Gal[ngal].Type > 2)
-	    terminate("Unknown galaxy type\n");
+          /* Note: Galaxies that are already type=2 do not need a special treatment at this point */
+          if(Gal[ngal].Type < 0 || Gal[ngal].Type > 2)
+            terminate("Unknown galaxy type\n");
 
-	  ngal++;
+          ngal++;
 
-	  currentgal = HaloGal[currentgal].NextGalaxy;
-	}
+          currentgal = HaloGal[currentgal].NextGalaxy;
+        }
 
       prog = Halo[prog].NextProgenitor;
     }
@@ -626,31 +636,31 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
    * at zero luminosity. */
   if(ngal == 0)
     {
-      *cenngal=0;
+      *cenngal = 0;
 
       if(Halo[halonr].FirstHaloInFOFgroup == halonr)
-	{
-	  init_galaxy(ngal, halonr);
-	  ngal++;
-	}
+        {
+          init_galaxy(ngal, halonr);
+          ngal++;
+        }
     }
 
   /* satelites (type 2's) will preferably merge onto this type 1 rather than the type 0 */
   for(i = ngalstart, centralgal = -1; i < ngal; i++)
     if(Gal[i].Type == 0 || Gal[i].Type == 1)
       {
-	if(centralgal != -1)
-	  terminate("Subhalo hosts more than one Type 0/1\n");
+        if(centralgal != -1)
+          terminate("Subhalo hosts more than one Type 0/1\n");
 
-	centralgal = i;
+        centralgal = i;
       }
 
   for(i = ngalstart; i < ngal; i++)
     {
       Gal[i].CentralGal = centralgal;
       if(centralgal != -1)
-	for(j = 0; j < 3; j++)
-	  Gal[i].MergCentralPos[j] = Gal[centralgal].Pos[j];
+        for(j = 0; j < 3; j++)
+          Gal[i].MergCentralPos[j] = Gal[centralgal].Pos[j];
     }
 
   /* Satellites whose type 1 has merged into type 0, will be reset to merge
@@ -658,16 +668,16 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
   if(centralgal == -1 && ngal != ngalstart)
     {
       for(i = ngalstart; i < ngal; i++)
-  	{
-	  Gal[i].CentralGal = *cenngal;
-	  for(j = 0; j < 3; j++)
-	    Gal[i].MergCentralPos[j] = Gal[*cenngal].Pos[j];
-  	}
+        {
+          Gal[i].CentralGal = *cenngal;
+          for(j = 0; j < 3; j++)
+            Gal[i].MergCentralPos[j] = Gal[*cenngal].Pos[j];
+        }
     }
-  
-  for (i = ngalstart; i<ngal; i++)
-    mass_checks("Bottom of join_galaxies_of_progenitors",i);
-  
+
+  for(i = ngalstart; i < ngal; i++)
+    mass_checks("Bottom of join_galaxies_of_progenitors", i);
+
   report_memory_usage(&HighMark, "join_galaxies");
 
   return ngal;
@@ -691,7 +701,7 @@ int join_galaxies_of_progenitors(int halonr, int ngalstart, int *cenngal)
   *       All these calculations are done in time steps of 1/STEPS the time
   *       between each snapshot (STEPS=20).
   */
- 
+
 /* Note: halonr is here the FOF-background subhalo (i.e. main halo) */
 void evolve_galaxies(int halonr, int ngal, int treenr, int cenngal)
 {
@@ -699,16 +709,17 @@ void evolve_galaxies(int halonr, int ngal, int treenr, int cenngal)
   double infallingGas, deltaT, Zcurr;
   double time, previoustime, newtime;
   double AGNaccreted, t_Edd;
+
 #ifdef STAR_FORMATION_HISTORY
   double age_in_years;
 #endif
 
   // Eddington time in code units
   // code units are UnitTime_in_s/Hubble_h
-  t_Edd=1.42e16*Hubble_h/UnitTime_in_s;
+  t_Edd = 1.42e16 * Hubble_h / UnitTime_in_s;
 
   //previoustime = NumToTime(Gal[0].SnapNum);
-  previoustime = NumToTime(Halo[halonr].SnapNum-1);
+  previoustime = NumToTime(Halo[halonr].SnapNum - 1);
   newtime = NumToTime(Halo[halonr].SnapNum);
 
   /* Time between snapshots */
@@ -717,181 +728,183 @@ void evolve_galaxies(int halonr, int ngal, int treenr, int cenngal)
   Zcurr = ZZ[Halo[halonr].SnapNum];
 
   centralgal = Gal[0].CentralGal;
-	
-  for (p =0;p<ngal;p++)
-	  mass_checks("Evolve_galaxies #0",p);
+
+  for(p = 0; p < ngal; p++)
+    mass_checks("Evolve_galaxies #0", p);
 
   //print_galaxy("\n\ncheck1", centralgal, halonr);
 
- if(Gal[centralgal].Type != 0 || Gal[centralgal].HaloNr != halonr)
+  if(Gal[centralgal].Type != 0 || Gal[centralgal].HaloNr != halonr)
     terminate("Something wrong here ..... \n");
 
   /* Update all galaxies to same star-formation history time-bins.
    * Needed in case some galaxy has skipped a snapshot. */
 #ifdef STAR_FORMATION_HISTORY
-  age_in_years=(Age[0]-previoustime)*UnitTime_in_years/Hubble_h; //ROB: age_in_years is in units of "real years"!
-  nstep=0;
-  for (p=0; p<ngal; p++)
-    sfh_update_bins(p,Halo[halonr].SnapNum-1,nstep,age_in_years);
+  age_in_years = (Age[0] - previoustime) * UnitTime_in_years / Hubble_h;        //ROB: age_in_years is in units of "real years"!
+  nstep = 0;
+  for(p = 0; p < ngal; p++)
+    sfh_update_bins(p, Halo[halonr].SnapNum - 1, nstep, age_in_years);
 #endif
 
   /* Handle the transfer of mass between satellites and central galaxies */
   deal_with_satellites(centralgal, ngal);
 
   /* Delete inconsequential galaxies */
-  for (p =0;p<ngal;p++)
-    if (Gal[p].Type ==2 && Gal[p].ColdGas+Gal[p].DiskMass+Gal[p].BulgeMass <1.e-8)
+  for(p = 0; p < ngal; p++)
+    if(Gal[p].Type == 2 && Gal[p].ColdGas + Gal[p].DiskMass + Gal[p].BulgeMass < 1.e-8)
       Gal[p].Type = 3;
     else
-      mass_checks("Evolve_galaxies #0.1",p);
-   
+      mass_checks("Evolve_galaxies #0.1", p);
+
   /* Calculate how much hot gas needs to be accreted to give the correct baryon fraction
    * in the main halo. This is the universal fraction, less any reduction due to reionization. */
   infallingGas = infall_recipe(centralgal, ngal, Zcurr);
-  Gal[centralgal].PrimordialAccretionRate=infallingGas/deltaT;
-  
+  Gal[centralgal].PrimordialAccretionRate = infallingGas / deltaT;
+
   /* All the physics are computed in a number of intervals between snapshots
    * equal to STEPS */
-  for (nstep = 0; nstep < STEPS; nstep++)
+  for(nstep = 0; nstep < STEPS; nstep++)
     {
       /* time to present of the current step */
       time = previoustime - (nstep + 0.5) * (deltaT / STEPS);
 
-      /* Update all galaxies to the star-formation history time-bins of current step*/
+      /* Update all galaxies to the star-formation history time-bins of current step */
 #ifdef STAR_FORMATION_HISTORY
-      age_in_years=(Age[0]-time)*UnitTime_in_years/Hubble_h;
-      for (p=0; p<ngal; p++)
-	sfh_update_bins(p,Halo[halonr].SnapNum-1,nstep,age_in_years);
+      age_in_years = (Age[0] - time) * UnitTime_in_years / Hubble_h;
+      for(p = 0; p < ngal; p++)
+        sfh_update_bins(p, Halo[halonr].SnapNum - 1, nstep, age_in_years);
 
 #endif
 
       /* Infall onto central galaxy only, if required to make up a baryon deficit */
 #ifndef GUO10
 #ifndef GUO13
-      if (infallingGas > 0.)
+      if(infallingGas > 0.)
 #endif
 #endif
-	add_infall_to_hot(centralgal, infallingGas / STEPS);
+        add_infall_to_hot(centralgal, infallingGas / STEPS);
 
-      mass_checks("Evolve_galaxies #0.5",centralgal);
+      mass_checks("Evolve_galaxies #0.5", centralgal);
 
-      for (p = 0; p < ngal; p++)
-	{
-	  /* don't treat galaxies that have already merged */
-	  if(Gal[p].Type == 3)
-	    continue;
-	  mass_checks("Evolve_galaxies #1",p);
+      for(p = 0; p < ngal; p++)
+        {
+          /* don't treat galaxies that have already merged */
+          if(Gal[p].Type == 3)
+            continue;
+          mass_checks("Evolve_galaxies #1", p);
 
-	  if (Gal[p].Type == 0 || Gal[p].Type == 1)
-	    {
-	      reincorporate_gas(p, deltaT / STEPS);
-	      /* determine cooling gas given halo properties and add it to the cold phase*/
-	      mass_checks("Evolve_galaxies #1.5",p);
-	      compute_cooling(p, deltaT / STEPS, ngal);
-	    }
-	}
+          if(Gal[p].Type == 0 || Gal[p].Type == 1)
+            {
+              reincorporate_gas(p, deltaT / STEPS);
+              /* determine cooling gas given halo properties and add it to the cold phase */
+              mass_checks("Evolve_galaxies #1.5", p);
+              compute_cooling(p, deltaT / STEPS, ngal);
+            }
+        }
 
       //this must be separated as now satellite AGN can heat central galaxies
       //therefore the AGN from all satellites must be computed, in a loop inside this function,
       //before gas is cooled into central galaxies (only suppress cooling, the gas is not actually heated)
       if(AGNRadioModeModel != 5)
-	do_AGN_heating(deltaT / STEPS, ngal);
+        do_AGN_heating(deltaT / STEPS, ngal);
 
-      for (p = 0; p < ngal; p++)
-	{
-	  cool_gas_onto_galaxy(p, deltaT / STEPS);
-	  mass_checks("Evolve_galaxies #2",p);
-	  starformation(p, centralgal, time, deltaT / STEPS, nstep);
-	  mass_checks("Evolve_galaxies #3",p);
-	  //print_galaxy("check3", centralgal, halonr);
-	}
+      for(p = 0; p < ngal; p++)
+        {
+          cool_gas_onto_galaxy(p, deltaT / STEPS);
+          mass_checks("Evolve_galaxies #2", p);
+          starformation(p, centralgal, time, deltaT / STEPS, nstep);
+          mass_checks("Evolve_galaxies #3", p);
+          //print_galaxy("check3", centralgal, halonr);
+        }
 
       /* Check for merger events */
       for(p = 0; p < ngal; p++)
-	{
-	  if(Gal[p].Type == 2 || (Gal[p].Type == 1 && Gal[p].MergeOn == 1))	/* satellite galaxy */
-	    {
-	      Gal[p].MergTime -= deltaT / STEPS;
-	      if(Gal[p].MergTime < 0.0)
-		{
-		  NumMergers++;
+        {
+          if(Gal[p].Type == 2 || (Gal[p].Type == 1 && Gal[p].MergeOn == 1))     /* satellite galaxy */
+            {
+              Gal[p].MergTime -= deltaT / STEPS;
+              if(Gal[p].MergTime < 0.0)
+                {
+                  NumMergers++;
 
-		  if(Gal[p].Type == 1)
-		    for(q = 0; q < ngal; q++)
-		      if(Gal[q].Type == 2 && Gal[p].CentralGal == p)
-			Gal[q].CentralGal = cenngal;
+                  if(Gal[p].Type == 1)
+                    for(q = 0; q < ngal; q++)
+                      if(Gal[q].Type == 2 && Gal[p].CentralGal == p)
+                        Gal[q].CentralGal = cenngal;
 
-		  if(Gal[p].Type == 2)
-		    merger_centralgal = Gal[p].CentralGal;
-		  else
-		    merger_centralgal = cenngal;
+                  if(Gal[p].Type == 2)
+                    merger_centralgal = Gal[p].CentralGal;
+                  else
+                    merger_centralgal = cenngal;
 
-		  mass_checks("Evolve_galaxies #4",p);
-		  mass_checks("Evolve_galaxies #4",merger_centralgal);
-		  mass_checks("Evolve_galaxies #4",centralgal);
+                  mass_checks("Evolve_galaxies #4", p);
+                  mass_checks("Evolve_galaxies #4", merger_centralgal);
+                  mass_checks("Evolve_galaxies #4", centralgal);
 
-		  deal_with_galaxy_merger(p, merger_centralgal, centralgal, time, deltaT, nstep);
+                  deal_with_galaxy_merger(p, merger_centralgal, centralgal, time, deltaT, nstep);
 
-		  mass_checks("Evolve_galaxies #5",p);
-		  mass_checks("Evolve_galaxies #5",merger_centralgal);
-		  mass_checks("Evolve_galaxies #5",centralgal);
+                  mass_checks("Evolve_galaxies #5", p);
+                  mass_checks("Evolve_galaxies #5", merger_centralgal);
+                  mass_checks("Evolve_galaxies #5", centralgal);
 
-		}
-	    }
-	}//loop on all galaxies to detect mergers
+                }
+            }
+        }                       //loop on all galaxies to detect mergers
 
 #ifdef DETAILED_METALS_AND_MASS_RETURN
       //DELAYED ENRICHMENT AND MASS RETURN + FEEDBACK: No fixed yield or recycling fraction anymore. FB synced with enrichment
-      for (p = 0; p < ngal; p++)
-	update_yields_and_return_mass(p, centralgal, deltaT/STEPS, nstep);
+      for(p = 0; p < ngal; p++)
+        update_yields_and_return_mass(p, centralgal, deltaT / STEPS, nstep);
 #endif
 
-    }/* end move forward in interval STEPS */
+    }                           /* end move forward in interval STEPS */
 
   for(p = 0; p < ngal; p++)
     {
       if(Gal[p].Type == 2)
-	{
+        {
 #ifndef UPDATETYPETWO
-	  int jj;
-	  float tmppos;
-	  for(jj = 0; jj < 3; jj++)
-	    {
-	      tmppos = wrap(Gal[p].DistanceToCentralGal[jj],BoxSize);
-	      tmppos *=  2.*sqrt(Gal[p].MergTime/Gal[p].OriMergTime);
-	      Gal[p].Pos[jj] = Gal[p].MergCentralPos[jj] + tmppos;
+          int jj;
+          float tmppos;
 
-	      if(Gal[p].Pos[jj] < 0)
-		Gal[p].Pos[jj] = BoxSize + Gal[p].Pos[jj];
-	      if(Gal[p].Pos[jj] > BoxSize)
-		Gal[p].Pos[jj] = Gal[p].Pos[jj] - BoxSize;
-	    }
+          for(jj = 0; jj < 3; jj++)
+            {
+              tmppos = wrap(Gal[p].DistanceToCentralGal[jj], BoxSize);
+              tmppos *= 2. * sqrt(Gal[p].MergTime / Gal[p].OriMergTime);
+              Gal[p].Pos[jj] = Gal[p].MergCentralPos[jj] + tmppos;
+
+              if(Gal[p].Pos[jj] < 0)
+                Gal[p].Pos[jj] = BoxSize + Gal[p].Pos[jj];
+              if(Gal[p].Pos[jj] > BoxSize)
+                Gal[p].Pos[jj] = Gal[p].Pos[jj] - BoxSize;
+            }
 #endif
-	  /* Disruption of type 2 galaxies. Type 1 galaxies are not disrupted since usually
-	   * bayonic component is more compact than dark matter.*/
+          /* Disruption of type 2 galaxies. Type 1 galaxies are not disrupted since usually
+           * bayonic component is more compact than dark matter.*/
 
-	  if(DisruptionModel==0)
-	    disrupt(p);
-	}
+          if(DisruptionModel == 0)
+            disrupt(p);
+        }
     }
 
-  for (p =0;p<ngal;p++)
-    mass_checks("Evolve_galaxies #6",p);
-  
+  for(p = 0; p < ngal; p++)
+    mass_checks("Evolve_galaxies #6", p);
+
 #ifdef COMPUTE_SPECPHOT_PROPERTIES
 #ifndef  POST_PROCESS_MAGS
   int n;
+
   /* If this is an output snapshot apply the dust model to each galaxy */
   for(n = 0; n < NOUT; n++)
     {
       if(Halo[halonr].SnapNum == ListOutputSnaps[n])
         {
-    	  for(p = 0; p < ngal; p++)
-    		  dust_model(p, n, halonr);
-    	  break;
+          for(p = 0; p < ngal; p++)
+            dust_model(p, n, halonr);
+          break;
         }
     }
-#endif  //POST_PROCESS_MAGS
+#endif //POST_PROCESS_MAGS
 #endif //COMPUTE_SPECPHOT_PROPERTIES
 
   /* now save the galaxies of all the progenitors (and free the associated storage) */
@@ -900,12 +913,14 @@ void evolve_galaxies(int halonr, int ngal, int treenr, int cenngal)
   while(prog >= 0)
     {
       int currentgal;
+
       for(i = 0, currentgal = HaloAux[prog].FirstGalaxy; i < HaloAux[prog].NGalaxies; i++)
         {
-    	  int nextgal = HaloGal[currentgal].NextGalaxy;
-    	  /* this will write this galaxy to an output file and free the storage associate with it */
-    	  output_galaxy(treenr, HaloGal[currentgal].HeapIndex);
-    	  currentgal = nextgal;
+          int nextgal = HaloGal[currentgal].NextGalaxy;
+
+          /* this will write this galaxy to an output file and free the storage associate with it */
+          output_galaxy(treenr, HaloGal[currentgal].HeapIndex);
+          currentgal = nextgal;
         }
       prog = Halo[prog].NextProgenitor;
     }
@@ -913,83 +928,88 @@ void evolve_galaxies(int halonr, int ngal, int treenr, int cenngal)
   for(p = 0, prevgal = -1, currenthalo = -1, centralgal = -1, start = NGalTree; p < ngal; p++)
     {
       if(Gal[p].HaloNr != currenthalo)
-	{
-	  currenthalo = Gal[p].HaloNr;
-	  HaloAux[currenthalo].FirstGalaxy = -1;
-	  HaloAux[currenthalo].NGalaxies = 0;
-	}
+        {
+          currenthalo = Gal[p].HaloNr;
+          HaloAux[currenthalo].FirstGalaxy = -1;
+          HaloAux[currenthalo].NGalaxies = 0;
+        }
 
-      mass_checks("Evolve_galaxies #7",p);
+      mass_checks("Evolve_galaxies #7", p);
 
       if(Gal[p].Type != 3)
-	{
-	  if(NHaloGal >= MaxHaloGal)
-	    {
-	      int oldmax = MaxHaloGal;
-	      AllocValue_MaxHaloGal *= ALLOC_INCREASE_FACTOR;
-	      MaxHaloGal = AllocValue_MaxHaloGal;
-	      if(MaxHaloGal<NHaloGal+1)
-		MaxHaloGal=NHaloGal+1;
-	      HaloGal = static_cast<GALAXY*>(myrealloc_movable(HaloGal, sizeof(struct GALAXY) * MaxHaloGal));
-	      HaloGalHeap = static_cast<int*>(myrealloc_movable(HaloGalHeap, sizeof(int) * MaxHaloGal));
-	      for(i = oldmax; i < MaxHaloGal; i++)
-		HaloGalHeap[i] = i;
-	    }
+        {
+          if(NHaloGal >= MaxHaloGal)
+            {
+              int oldmax = MaxHaloGal;
 
-	  Gal[p].SnapNum = Halo[currenthalo].SnapNum;
+              AllocValue_MaxHaloGal *= ALLOC_INCREASE_FACTOR;
+              MaxHaloGal = AllocValue_MaxHaloGal;
+              if(MaxHaloGal < NHaloGal + 1)
+                MaxHaloGal = NHaloGal + 1;
+              HaloGal =
+                static_cast < GALAXY * >(myrealloc_movable(HaloGal, sizeof(struct GALAXY) * MaxHaloGal));
+              HaloGalHeap = static_cast < int *>(myrealloc_movable(HaloGalHeap, sizeof(int) * MaxHaloGal));
+
+              for(i = oldmax; i < MaxHaloGal; i++)
+                HaloGalHeap[i] = i;
+            }
+
+          Gal[p].SnapNum = Halo[currenthalo].SnapNum;
 
 #ifndef GUO10
 #ifdef UPDATETYPETWO
-	  update_type_two_coordinate_and_velocity(treenr, p, Gal[0].CentralGal);
+          update_type_two_coordinate_and_velocity(treenr, p, Gal[0].CentralGal);
 #endif
 #endif
 
-	  /* when galaxies are outputed, the slot is filled with the
-	   * last galaxy in the heap. New galaxies always take the last spot */
-	  int nextgal = HaloGalHeap[NHaloGal];
-	  HaloGal[nextgal] = Gal[p];
-	  HaloGal[nextgal].HeapIndex = NHaloGal;
+          /* when galaxies are outputed, the slot is filled with the
+           * last galaxy in the heap. New galaxies always take the last spot */
+          int nextgal = HaloGalHeap[NHaloGal];
 
-	  if(HaloAux[currenthalo].FirstGalaxy < 0)
-	    HaloAux[currenthalo].FirstGalaxy = nextgal;
+          HaloGal[nextgal] = Gal[p];
+          HaloGal[nextgal].HeapIndex = NHaloGal;
 
-	  if(prevgal >= 0)
-	    HaloGal[prevgal].NextGalaxy = nextgal;
-	  prevgal = nextgal;
+          if(HaloAux[currenthalo].FirstGalaxy < 0)
+            HaloAux[currenthalo].FirstGalaxy = nextgal;
 
-	  HaloAux[currenthalo].NGalaxies++;
-	  NHaloGal++;
+          if(prevgal >= 0)
+            HaloGal[prevgal].NextGalaxy = nextgal;
+          prevgal = nextgal;
+
+          HaloAux[currenthalo].NGalaxies++;
+          NHaloGal++;
 
 
 #ifdef GALAXYTREE
-	  if(NGalTree >= MaxGalTree)
-	    {
-	      AllocValue_MaxGalTree *= ALLOC_INCREASE_FACTOR;
-	      MaxGalTree = AllocValue_MaxGalTree;
-	      if(MaxGalTree<NGalTree+1) MaxGalTree=NGalTree+1;
-	      GalTree = myrealloc_movable(GalTree, sizeof(struct galaxy_tree_data) * MaxGalTree);
-	    }
-	  HaloGal[nextgal].GalTreeIndex = NGalTree;
+          if(NGalTree >= MaxGalTree)
+            {
+              AllocValue_MaxGalTree *= ALLOC_INCREASE_FACTOR;
+              MaxGalTree = AllocValue_MaxGalTree;
+              if(MaxGalTree < NGalTree + 1)
+                MaxGalTree = NGalTree + 1;
+              GalTree = myrealloc_movable(GalTree, sizeof(struct galaxy_tree_data) * MaxGalTree);
+            }
+          HaloGal[nextgal].GalTreeIndex = NGalTree;
 
-	  memset(&GalTree[NGalTree], 0, sizeof(struct galaxy_tree_data));
-	  GalTree[NGalTree].HaloGalIndex = nextgal;
-	  GalTree[NGalTree].SnapNum = Halo[currenthalo].SnapNum;
-	  GalTree[NGalTree].NextProgGal = -1;
-	  GalTree[NGalTree].DescendantGal = -1;
+          memset(&GalTree[NGalTree], 0, sizeof(struct galaxy_tree_data));
+          GalTree[NGalTree].HaloGalIndex = nextgal;
+          GalTree[NGalTree].SnapNum = Halo[currenthalo].SnapNum;
+          GalTree[NGalTree].NextProgGal = -1;
+          GalTree[NGalTree].DescendantGal = -1;
 
-	  GalTree[NGalTree].FirstProgGal = Gal[p].FirstProgGal;
-	  if(Gal[p].Type == 0)
-	    centralgal = NGalTree;
-	  NGalTree++;
+          GalTree[NGalTree].FirstProgGal = Gal[p].FirstProgGal;
+          if(Gal[p].Type == 0)
+            centralgal = NGalTree;
+          NGalTree++;
 #endif
-	}
+        }
     }
 
 #ifdef GALAXYTREE
   for(p = start; p < NGalTree; p++)
     {
       if(centralgal < 0)
-	terminate("centralgal < 0");
+        terminate("centralgal < 0");
       GalTree[p].FOFCentralGal = centralgal;
     }
 #endif
@@ -1005,12 +1025,12 @@ void output_galaxy(int treenr, int heap_index)
   if(heap_index >= NHaloGal)
     terminate("heap_index >= NHaloGal");
 
-  if(HaloGal[gal_index].HeapIndex != heap_index)	// consistency check
+  if(HaloGal[gal_index].HeapIndex != heap_index)        // consistency check
     terminate("this should not happen");
 
 #ifdef GUO10
 #ifdef UPDATETYPETWO
-		  update_type_two_coordinate_and_velocity(treenr, gal_index, HaloGal[0].CentralGal);
+  update_type_two_coordinate_and_velocity(treenr, gal_index, HaloGal[0].CentralGal);
 #endif
 #endif
 
@@ -1027,6 +1047,7 @@ void output_galaxy(int treenr, int heap_index)
 
 #else //Normal snap output
   int n;
+
   for(n = 0; n < NOUT; n++)
     if(ListOutputSnaps[n] == HaloGal[gal_index].SnapNum)
       save_galaxy_append(treenr, gal_index, n);
@@ -1037,6 +1058,7 @@ void output_galaxy(int treenr, int heap_index)
 
   int last = NHaloGal - 1;
   int last_gal_index = HaloGalHeap[last];
+
   HaloGalHeap[last] = gal_index;
   HaloGalHeap[heap_index] = last_gal_index;
 
@@ -1049,7 +1071,8 @@ void output_galaxy(int treenr, int heap_index)
 /**
  * @brief Check whether makefile options are compatible.
  */
-void check_options() {
+void check_options()
+{
 #ifdef OUTPUT_OBS_MAGS
 #ifndef COMPUTE_OBS_MAGS
   printf("\n\n> Error : Makefile option OUTPUT_OBS MAGS requires option COMPUTE_OBS_MAGS \n");
@@ -1058,7 +1081,7 @@ void check_options() {
 #endif
 
 #ifdef OUTPUT_MOMAF_INPUTS
-#ifndef COMPUTE_OBS_MAGS 
+#ifndef COMPUTE_OBS_MAGS
   printf("\n\n> Error : Makefile option OUTPUT_MOMAF_INPUTS requires option COMPUTE_OBS_MAGS \n");
   exit(32);
 #endif
@@ -1091,19 +1114,19 @@ void check_options() {
 
 #ifndef LOADIDS
 #ifdef GALAXYTREE
-terminate("\n\n> Error : Makefile option GALAXYTREE requires LOADIDS \n");
+  terminate("\n\n> Error : Makefile option GALAXYTREE requires LOADIDS \n");
 #endif
 #endif
 
 #ifndef STAR_FORMATION_HISTORY
 #ifdef POST_PROCESS_MAGS
-terminate("\n\n> Error : Makefile option POST_PROCESS_MAGS  requires STAR_FORMATION_HISTORY \n");
+  terminate("\n\n> Error : Makefile option POST_PROCESS_MAGS  requires STAR_FORMATION_HISTORY \n");
 #endif
 #endif
 
 #ifdef MCMC
 #ifndef LOADIDS
-terminate("\n\n> Error : Makefile option MCMC  requires LOADIDS \n");
+  terminate("\n\n> Error : Makefile option MCMC  requires LOADIDS \n");
 #endif
 #endif
 
@@ -1119,16 +1142,17 @@ terminate("\n\n> Error : Makefile option MCMC  requires LOADIDS \n");
 
 #ifdef PHOTTABLES_PRECOMPUTED
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
-terminate("\n\n> Error : Makefile option PHOTTABLES_PRECOMPUTED cannot run with SPEC_PHOTABLES_ON_THE_FLY\n");
+  terminate
+    ("\n\n> Error : Makefile option PHOTTABLES_PRECOMPUTED cannot run with SPEC_PHOTABLES_ON_THE_FLY\n");
 #endif
 #endif
 
 #ifdef LIGHT_OUTPUT
 #ifdef POST_PROCESS_MAGS
-terminate("\n\n> Error : Makefile option LIGHT_OUTPUT cannot run with POST_PROCESS_MAGS \n");
+  terminate("\n\n> Error : Makefile option LIGHT_OUTPUT cannot run with POST_PROCESS_MAGS \n");
 #endif
 #ifdef OUTPUT_MOMAF_INPUTS
-terminate("\n\n> Error : Makefile option LIGHT_OUTPUT cannot run with OUTPUT_MOMAF_INPUTS \n");
+  terminate("\n\n> Error : Makefile option LIGHT_OUTPUT cannot run with OUTPUT_MOMAF_INPUTS \n");
 #endif
 #endif //LIGHT_OUTPUT
 

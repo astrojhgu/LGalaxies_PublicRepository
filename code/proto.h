@@ -44,7 +44,7 @@ void create_galaxy_tree_file(int filenr);
 void save_galaxy_tree_append(int i);
 void save_galaxy_tree_finalize(int filenr, int tree);
 void prepare_galaxy_tree_info_for_output(int filenr, int tree, struct galaxy_tree_data *g,
-					 struct GALAXY_OUTPUT *o);
+                                         struct GALAXY_OUTPUT *o);
 int walk_galaxy_tree(int nr);
 int save_galaxy_tree_compare(const void *a, const void *b);
 
@@ -60,10 +60,10 @@ void *myrealloc_fullinfo(void *p, size_t n, const char *func, const char *file, 
 void myfree_movable_fullinfo(void *p, const char *func, const char *file, int line);
 void myfree_fullinfo(void *p, const char *func, const char *file, int line);
 void *mymalloc_movable_fullinfo(void *ptr, const char *varname, size_t n, const char *func, const char *file,
-				int line);
+                                int line);
 void *mymalloc_fullinfo(const char *varname, size_t n, const char *func, const char *file, int line);
-void report_detailed_memory_usage_of_largest_task(size_t * OldHighMarkBytes, const char *label,
-						  const char *func, const char *file, int line);
+void report_detailed_memory_usage_of_largest_task(size_t *OldHighMarkBytes, const char *label,
+                                                  const char *func, const char *file, int line);
 void mymalloc_init(void);
 
 void save_galaxy_tree_reorder_on_disk(void);
@@ -86,7 +86,7 @@ double scale_v_cen(int snapnum);
 
 long long calc_big_db_offset(int filenr, int treenr);
 void prepare_galaxy_tree_info_for_output(int filenr, int tree, struct galaxy_tree_data *g,
-					 struct GALAXY_OUTPUT *o);
+                                         struct GALAXY_OUTPUT *o);
 
 void init(void);
 void set_units(void);
@@ -126,7 +126,8 @@ void compute_cooling(int p, double dt, int ngal);
 void do_AGN_heating(double dt, int ngal);
 void cool_gas_onto_galaxy(int p, double dt);
 void reincorporate_gas(int p, double dt);
-void deal_with_galaxy_merger(int p, int merger_centralgal, int centralgal, double time, double deltaT, int nstep);
+void deal_with_galaxy_merger(int p, int merger_centralgal, int centralgal, double time, double deltaT,
+                             int nstep);
 double do_reionization(float Mvir, double Zcurr);
 double NumToTime(int snapnum);
 
@@ -157,32 +158,38 @@ void setup_RedshiftTab();
 void read_vega_spectra(double *LambdaVega, double *FluxVega);
 void read_filters(double LambdaFilter[NMAG][MAX_NLambdaFilter], double FluxFilter[NMAG][MAX_NLambdaFilter]);
 void read_MetalTab();
-void read_InputSSP_spectra(double LambdaInputSSP[SSP_NAGES][SSP_NLambda], double FluxInputSSP[SSP_NAGES][SSP_NLambda], int MetalLoop);
-void free_input_spectra(double LambdaInputSSP[SSP_NAGES][SSP_NLambda], double FluxInputSSP[SSP_NAGES][SSP_NLambda]);
+void read_InputSSP_spectra(double LambdaInputSSP[SSP_NAGES][SSP_NLambda],
+                           double FluxInputSSP[SSP_NAGES][SSP_NLambda], int MetalLoop);
+void free_input_spectra(double LambdaInputSSP[SSP_NAGES][SSP_NLambda],
+                        double FluxInputSSP[SSP_NAGES][SSP_NLambda]);
 
 //misc
 double get_AbsAB_magnitude(double FluxInputSSPInt, double FluxFilterInt, double redshift);
-double get_area (double redshift);
+double get_area(double redshift);
 double lum_distance(double redshift);
 
 //numerical
-double* create_grid (double WaveMin, double WaveMax, int AgeLoop, double redshift, double LambdaInputSSP[SSP_NAGES][SSP_NLambda],
-		                      int *Min_Wave_Grid, int *Max_Wave_Grid, int *Grid_Length);
-void interpolate(double *lgrid, int Grid_Length, double *lambda, int nlambda, double *flux, double *FluxOnGrid);
+double *create_grid(double WaveMin, double WaveMax, int AgeLoop, double redshift,
+                    double LambdaInputSSP[SSP_NAGES][SSP_NLambda], int *Min_Wave_Grid, int *Max_Wave_Grid,
+                    int *Grid_Length);
+void interpolate(double *lgrid, int Grid_Length, double *lambda, int nlambda, double *flux,
+                 double *FluxOnGrid);
 #endif //SPEC_PHOTABLES_ON_THE_FLY
 
-void find_interpolated_lum(double timenow, double timetarget, double metallicity, int *metindex, int *tabindex,
-			                     double *f1, double *f2,  double *fmet1, double *fmet2);
+void find_interpolated_lum(double timenow, double timetarget, double metallicity, int *metindex,
+                           int *tabindex, double *f1, double *f2, double *fmet1, double *fmet2);
 
 #ifdef POST_PROCESS_MAGS
 void post_process_spec_mags(struct GALAXY_OUTPUT *o);
-void compute_post_process_lum (double mass, double age, double metals, int snap, int nlum, double *Lum, double *ObsLum,
-		                           double *dObsLum,double *dObsLum_forward,
-		                           double *YLum, double *ObsYLum, double *dObsYLum, double *dObsYLum_forward);
-void dust_correction_for_post_processing(int nlum, int snap, double Zg, double ColdGas, double GasDiskRadius, double CosInclination,
-		                                     double LumDisk, double ObsLumDisk, double dObsLumDisk, double dObsLumDisk_forward,
-								                         double YLumDisk, double ObsYLumDisk, double dObsYLumDisk, double dObsYLumDisk_forward,
-								                         double *LumDiskDust, double *ObsLumDiskDust, double *dObsLumDiskDust, double *dObsLumDiskDust_forward);
+void compute_post_process_lum(double mass, double age, double metals, int snap, int nlum, double *Lum,
+                              double *ObsLum, double *dObsLum, double *dObsLum_forward, double *YLum,
+                              double *ObsYLum, double *dObsYLum, double *dObsYLum_forward);
+void dust_correction_for_post_processing(int nlum, int snap, double Zg, double ColdGas, double GasDiskRadius,
+                                         double CosInclination, double LumDisk, double ObsLumDisk,
+                                         double dObsLumDisk, double dObsLumDisk_forward, double YLumDisk,
+                                         double ObsYLumDisk, double dObsYLumDisk, double dObsYLumDisk_forward,
+                                         double *LumDiskDust, double *ObsLumDiskDust, double *dObsLumDiskDust,
+                                         double *dObsLumDiskDust_forward);
 #else
 void add_to_luminosities(int p, double mstars, double time, double dt, double metallicity);
 void dust_model(int p, int snap, int halonr);
@@ -205,7 +212,8 @@ double hubble_of_z(int halonr);
 double get_virial_velocity(int halonr);
 double get_virial_radius(int halonr);
 double get_virial_mass(int halonr);
-double collisional_starburst_recipe(double mass_ratio, int merger_centralgal, int centralgal, double time, double deltaT);
+double collisional_starburst_recipe(double mass_ratio, int merger_centralgal, int centralgal, double time,
+                                    double deltaT);
 
 void make_bulge_from_burst(int p);
 void grow_black_hole(int merger_centralgal, double mass_ratio, double deltaT);
@@ -247,16 +255,17 @@ double get_initial_disk_radius(int halonr, int p);
 void update_bulge_from_disk(int p, double stars);
 double bulge_from_disk(double frac);
 double func_size(double x, double a);
-void bulgesize_from_merger(double mass_ratio, int merger_centralgal, int p, double Mcstar,double Mcbulge,double Mcgas, double Mpstar, double Mpbulge,double Mpgas, double frac);
+void bulgesize_from_merger(double mass_ratio, int merger_centralgal, int p, double Mcstar, double Mcbulge,
+                           double Mcgas, double Mpstar, double Mpbulge, double Mpgas, double frac);
 double isothermal_mass(double Mvir, double Rvir, double dr);
 double diskmass(double x);
 double bulgemass(double x);
 double sat_radius(int p);
 
-void update_type_2(int ngal,int halonr, int prog,int mostmassive);
-void update_centralgal(int ngal,int halonr);
-void update_hotgas(int ngal,int centralgal);
-void update_type_1(int ngal, int halonr,int prog);
+void update_type_2(int ngal, int halonr, int prog, int mostmassive);
+void update_centralgal(int ngal, int halonr);
+void update_hotgas(int ngal, int centralgal);
+void update_type_1(int ngal, int halonr, int prog);
 void transfer_ICL(int p, int q, double fraction);
 double separation_gal(int p, int q);
 double separation_halo(int p, int q);
@@ -267,9 +276,10 @@ void update_hot_frac(int p, double reincorporated, float HotGas);
 int set_merger_center(int fofhalo);
 
 void transfer_stars(int p, const char cp[], int q, const char cq[], double fraction);
-void transfer_gas(int p, const char cp[], int q, const char cq[], double fraction, const char call_function[], int line);
+void transfer_gas(int p, const char cp[], int q, const char cq[], double fraction, const char call_function[],
+                  int line);
 void deal_with_satellites(int centralgal, int ngal);
-void mass_checks(const char* string, int igal) ;
+void mass_checks(const char *string, int igal);
 
 #ifdef STAR_FORMATION_HISTORY
 void sfh_initialise(int p);
@@ -281,16 +291,12 @@ void write_sfh_bins();
 #endif //STAR_FORMATION_HISTORY
 
 #ifdef DETAILED_METALS_AND_MASS_RETURN
-struct metals metals_add(struct metals m1,
-	       struct metals m2,
-	       float fraction);
+struct metals metals_add(struct metals m1, struct metals m2, float fraction);
 struct metals metals_init();
-void metals_print(const char s[],struct metals m);
+void metals_print(const char s[], struct metals m);
 float metals_total(struct metals m);
 #else
-float metals_add(float m1, 
-		 float m2,
-		 float fraction);
+float metals_add(float m1, float m2, float fraction);
 float metals_init();
 void metals_print(const char s[], float m);
 float metals_total(float m);
@@ -315,16 +321,21 @@ int max_Mi_lower(int Mi_lower, int channel_type);
 int min_Mi_upper(int Mi_upper, int channel_type);
 int find_SNII_mass_bin(double masslimit);
 int find_agb_mass_bin(double masslimit);
+
 #ifdef DTD
-double DTDcalc (double timevalue);
+double DTDcalc(double timevalue);
 #endif
 #ifdef INDIVIDUAL_ELEMENTS
-void find_actual_ejecta_limits(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower, int Mi_upper, int Zi,
-		double* EjectedMasses_lower_actual, double* EjectedMasses_upper_actual, double* TotalMetals_lower_actual, double* TotalMetals_upper_actual,
-		double* Yields_lower_actual, double* Yields_upper_actual);
+void find_actual_ejecta_limits(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower,
+                               int Mi_upper, int Zi, double *EjectedMasses_lower_actual,
+                               double *EjectedMasses_upper_actual, double *TotalMetals_lower_actual,
+                               double *TotalMetals_upper_actual, double *Yields_lower_actual,
+                               double *Yields_upper_actual);
 #else
-void find_actual_ejecta_limits(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower, int Mi_upper, int Zi,
-		double* EjectedMasses_lower_actual, double* EjectedMasses_upper_actual, double* TotalMetals_lower_actual, double* TotalMetals_upper_actual);
+void find_actual_ejecta_limits(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower,
+                               int Mi_upper, int Zi, double *EjectedMasses_lower_actual,
+                               double *EjectedMasses_upper_actual, double *TotalMetals_lower_actual,
+                               double *TotalMetals_upper_actual);
 #endif
 
 void print_galaxy(char string[], int p, int halonr);
@@ -333,21 +344,21 @@ void print_galaxy(char string[], int p, int halonr);
 //in elements.c:
 struct elements elements_add(struct elements ele1, struct elements ele2, float fraction);
 struct elements elements_init();
-void elements_print(char s[],struct elements ele);
+void elements_print(char s[], struct elements ele);
 double elements_total(struct elements ele);
 double metal_elements_total(struct elements ele);
 
 //in recipe_yields.c:
 void update_yields_and_return_mass(int p, int centralgal, double dt, int nstep);
 int find_initial_metallicity(int p, int sfh_bin, int table_type, int component_type);
+
 #ifdef INSTANTANEOUS_RECYCLE
 void reset_ejection_rates(int i, int sfh_ibin,
-		 double *NormSNIIMassEjecRate_actual, double *NormSNIIMetalEjecRate_actual,
-		 double *NormSNIaMassEjecRate_actual, double *NormAGBMassEjecRate_actual,
-		 double *NormSNIaMetalEjecRate_actual, double *NormAGBMetalEjecRate_actual);
+                          double *NormSNIIMassEjecRate_actual, double *NormSNIIMetalEjecRate_actual,
+                          double *NormSNIaMassEjecRate_actual, double *NormAGBMassEjecRate_actual,
+                          double *NormSNIaMetalEjecRate_actual, double *NormAGBMetalEjecRate_actual);
 #endif
 
 #endif //DETAILED_METALS_AND_MASS_RETURN
 
 void print_galaxy(char string[], int p, int halonr);
-

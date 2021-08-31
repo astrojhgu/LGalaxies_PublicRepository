@@ -18,17 +18,17 @@ using namespace std;
 
 #include "allvars.h"
 
-struct GALAXY			/* Galaxy data */
+struct GALAXY                   /* Galaxy data */
  *Gal, *HaloGal;
 
 struct halo_data *Halo, *Halo_Data;
 
-struct halo_aux_data		/* auxiliary halo data */
+struct halo_aux_data            /* auxiliary halo data */
  *HaloAux;
 
 struct halo_ids_data *HaloIDs, *HaloIDs_Data;
 
-int FirstFile;			/* first and last file for processing */
+int FirstFile;                  /* first and last file for processing */
 int LastFile;
 
 
@@ -36,7 +36,7 @@ double AllocValue_MaxHaloGal;
 double AllocValue_MaxGal;
 double AllocValue_MaxGalTree;
 
-int Ntrees;			/* number of trees in current file */
+int Ntrees;                     /* number of trees in current file */
 
 int MaxGal;
 int NHaloGal, MaxHaloGal;
@@ -56,9 +56,11 @@ char FileNameGalaxies[512];
 char SimulationDir[512];
 char FileWithOutputRedshifts[512];
 char FileWithZList[512];
+
 //variables used to scale to a different cosmology
 char FileWithZList_OriginalCosm[512];
-#ifdef MR_PLUS_MRII  //OPTION for MCMC
+
+#ifdef MR_PLUS_MRII             //OPTION for MCMC
 char FileWithZList_MR[512];
 char FileWithZList_OriginalCosm_MR[512];
 char FileWithZList_MRII[512];
@@ -79,7 +81,8 @@ int *TreeNgals[NOUT];
 
 int LastSnapShotNr;
 int LastDarkMatterSnapShot;
-#ifdef MR_PLUS_MRII  //OPTION for MCMC
+
+#ifdef MR_PLUS_MRII             //OPTION for MCMC
 int LastDarkMatterSnapShot_MR;
 int LastDarkMatterSnapShot_MRII;
 #endif
@@ -116,13 +119,14 @@ double Hubble_h;
 double Omega_OriginalCosm;
 double OmegaLambda_OriginalCosm;
 double Hubble_h_OriginalCosm;
+
 //SIMULATION RELATED
 double PartMass;
 double BoxSize;
 double PartMass_OriginalCosm;
 double BoxSize_OriginalCosm;
 
-#ifdef MR_PLUS_MRII  //OPTION for MCMC
+#ifdef MR_PLUS_MRII             //OPTION for MCMC
 double PartMass_MR;
 double BoxSize_MR;
 double PartMass_OriginalCosm_MR;
@@ -179,17 +183,11 @@ double EtaSNcode, EtaSN;
 
 double UnitTime_in_s,
   UnitPressure_in_cgs,
-  UnitDensity_in_cgs,
-  UnitCoolingRate_in_cgs,
-  UnitEnergy_in_cgs,
-  UnitTime_in_Megayears,
-  UnitTime_in_years,
+  UnitDensity_in_cgs, UnitCoolingRate_in_cgs, UnitEnergy_in_cgs, UnitTime_in_Megayears, UnitTime_in_years,
 #ifdef HALOMODEL
   RhoCrit,
 #endif
-  G,
-  Hubble,
-  a0, ar;
+  G, Hubble, a0, ar;
 
 int ListOutputSnaps[NOUT];
 float ListOutputRedshifts[NOUT];
@@ -197,6 +195,7 @@ float ListOutputRedshifts[NOUT];
 
 double ZZ[MAXSNAPS];
 double AA[MAXSNAPS];
+
 //variable used to scale to a different cosmology
 double AA_OriginalCosm[MAXSNAPS];
 
@@ -214,39 +213,46 @@ int NumMergers;
 /* tables hold magnitues of starburst population as a function of age */
 
 
-template<typename T>
-std::vector<std::vector<T>> data_matrix(size_t w, size_t d){
-  std::vector<std::vector<T>> result;
+template < typename T > std::vector < std::vector < T >> data_matrix(size_t w, size_t d)
+{
+  std::vector < std::vector < T >> result;
   result.reserve(w);
-  for(int i=0;i<w;++i){
-    result.push_back(std::vector<T>(d));
-  }
+  for(int i = 0; i < w; ++i)
+    {
+      result.push_back(std::vector < T > (d));
+    }
   return result;
 }
 
-template<typename T>
-std::vector<std::vector<std::vector<T>>> data_cube(size_t h, size_t w, size_t d){
-  std::vector<std::vector<std::vector<T>>> result;
+template < typename T >
+  std::vector < std::vector < std::vector < T >>> data_cube(size_t h, size_t w, size_t d)
+{
+  std::vector < std::vector < std::vector < T >>> result;
   result.reserve(h);
-  for(int i=0;i<h;++i){
-    result.push_back(data_matrix<T>(w, d));
-  }
+  for(int i = 0; i < h; ++i)
+    {
+      result.push_back(data_matrix < T > (w, d));
+    }
   return result;
 }
 
 
 #ifdef STAR_FORMATION_HISTORY
 //double SFH_t[MAXSNAPS][STEPS][SFH_NBIN];
-std::vector<std::vector<std::vector<double>>> SFH_t=data_cube<double>(MAXSNAPS, STEPS, SFH_NBIN);
+std::vector < std::vector < std::vector < double >>>SFH_t = data_cube < double >(MAXSNAPS, STEPS, SFH_NBIN);
+
 //double SFH_dt[MAXSNAPS][STEPS][SFH_NBIN];
-std::vector<std::vector<std::vector<double>>> SFH_dt=data_cube<double>(MAXSNAPS, STEPS, SFH_NBIN);
+std::vector < std::vector < std::vector < double >>>SFH_dt = data_cube < double >(MAXSNAPS, STEPS, SFH_NBIN);
+
 //int SFH_Nbins[MAXSNAPS][STEPS][SFH_NBIN];
-std::vector<std::vector<std::vector<int>>> SFH_Nbins=data_cube<int>(MAXSNAPS, STEPS, SFH_NBIN);
+std::vector < std::vector < std::vector < int >>>SFH_Nbins = data_cube < int >(MAXSNAPS, STEPS, SFH_NBIN);
+
 //int SFH_ibin[MAXSNAPS][STEPS];
-std::vector<std::vector<int>> SFH_ibin=data_matrix<int>(MAXSNAPS, STEPS);
+std::vector < std::vector < int >>SFH_ibin = data_matrix < int >(MAXSNAPS, STEPS);
+
 #ifdef DETAILED_METALS_AND_MASS_RETURN
-double tau_t[STEPS*MAXSNAPS]; //Time-to-z=0 of every timestep in the code. (Used for SNe rates in yield_integrals.c)
-double tau_dt[STEPS*MAXSNAPS];//Width of every timestep in the code. (Used for SNe rates in yield_integrals.c)
+double tau_t[STEPS * MAXSNAPS]; //Time-to-z=0 of every timestep in the code. (Used for SNe rates in yield_integrals.c)
+double tau_dt[STEPS * MAXSNAPS];        //Width of every timestep in the code. (Used for SNe rates in yield_integrals.c)
 #endif
 #endif //STAR_FORMATION_HISTORY
 
@@ -256,7 +262,8 @@ float SSP_logMetalTab[SSP_NMETALLICITES];
 float SSP_logAgeTab[SSP_NAGES];
 float RedshiftTab[MAXSNAPS];
 float LumTables[NMAG][SSP_NMETALLICITES][MAXSNAPS][SSP_NAGES];
-float FilterLambda[NMAG+1];	//wavelength of each filter + 1 for V-band
+float FilterLambda[NMAG + 1];   //wavelength of each filter + 1 for V-band
+
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
 int NLambdaFilter[NMAG];
 #endif
@@ -289,7 +296,7 @@ size_t offset_galsnapdata[NOUT], maxstorage_galsnapdata[NOUT], filled_galsnapdat
 #endif
 
 /* reionization Okamoto et al. 2008*/
-float Reion_z[46],Reion_Mc[46];
+float Reion_z[46], Reion_Mc[46];
 
 FILE *tree_file;
 FILE *treeaux_file;
@@ -297,7 +304,3 @@ FILE *treedbids_file;
 FILE *FdGalTree;
 FILE *FdGalTreeSFH;
 FILE *FdGalDumps[NOUT];
-
-
-
-
