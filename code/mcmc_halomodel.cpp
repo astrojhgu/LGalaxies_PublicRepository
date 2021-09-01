@@ -467,8 +467,7 @@ double corr_qawo(double r, double a, double L)
   F.params = 0;
   gsl_integration_workspace *w = gsl_integration_workspace_alloc(WORKSIZE);
 
-  gsl_integration_qawo_table *t = gsl_integration_qawo_table_alloc(r, L, GSL_INTEG_SINE, 40);
-
+  gsl_integration_qawo_table * t = gsl_integration_qawo_table_alloc(r, L, GSL_INTEG_SINE, 40);
   status = gsl_integration_qawo(&F, a, 0, 1.0e-3, WORKSIZE, w, t, &result, &abserr);
   gsl_integration_qawo_table_free(t);
   gsl_integration_workspace_free(w);
@@ -636,8 +635,7 @@ double mugal_qawo(double k, double m)
   F.params = &params;
   gsl_integration_workspace *w = gsl_integration_workspace_alloc(WORKSIZE);
 
-  gsl_integration_qawo_table *t = gsl_integration_qawo_table_alloc(k * rvir, xmax, GSL_INTEG_SINE, 25);
-
+  gsl_integration_qawo_table * t = gsl_integration_qawo_table_alloc(k * rvir, xmax, GSL_INTEG_SINE, 25);
   status = gsl_integration_qawo(&F, 0.0, 0, 1.0e-3, WORKSIZE, w, t, &result, &abserr);
   gsl_integration_qawo_table_free(t);
   gsl_integration_workspace_free(w);
